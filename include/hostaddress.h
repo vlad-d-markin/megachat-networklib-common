@@ -22,7 +22,7 @@ public:
      * Actually struct addrinfo
      * @param address hostname or IP
      */
-    HostAddress(const std::string& address);
+    HostAddress(const std::string& address, const std::string& port = "");
     
     
     virtual ~HostAddress();
@@ -33,7 +33,7 @@ public:
      * @brief Set new IP or hostname. Old addrinfo is removed.
      * @param address new IP address or hostname
      */
-    void setAddress(const std::string& address);
+    void setAddress(const std::string& address, const std::string& port = "");
     
     
     
@@ -45,7 +45,7 @@ public:
     std::string toString() const;
     
 private:
-    void getAddrInfo(const std::string& address);
+    void getAddrInfo(const std::string& address, const std::string& port);
     
 };
 

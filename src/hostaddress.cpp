@@ -6,8 +6,8 @@
 #include <arpa/inet.h>
 
 
-HostAddress::HostAddress(const std::string& address) {
-    getAddrInfo(address);
+HostAddress::HostAddress(const std::string& address, const std::string& port) {
+    getAddrInfo(address, port);
 }
 
 
@@ -18,10 +18,10 @@ HostAddress::~HostAddress() {
 
 
 
-void HostAddress::setAddress(const std::string& address) {
+void HostAddress::setAddress(const std::string& address, const std::string& port) {
     freeaddrinfo(m_addrinfo);
     
-    getAddrInfo(address);
+    getAddrInfo(address, port);
 }
 
 
@@ -40,8 +40,13 @@ std::string HostAddress::toString() const {
 
 
 
-void HostAddress::getAddrInfo(const std::string& address) {
+void HostAddress::getAddrInfo(const std::string& address, const std::string& port) {
     const char * node = address.data();
+    
+    const char * service = NULL;
+    if(port.length() > 0) {
+        service = port.data();
+    }
     
     int status;
     struct addrinfo hints;
@@ -51,7 +56,7 @@ void HostAddress::getAddrInfo(const std::string& address) {
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     
-    if((status = getaddrinfo(node, NULL, &hints, &m_addrinfo)) != 0) {
+    if((status = getaddrinfo(node, service, &hints, &m_addrinfo)) != 0) {
         throw std::string(gai_strerror(status));
     }
 }
