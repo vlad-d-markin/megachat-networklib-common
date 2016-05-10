@@ -5,4 +5,6 @@ SRC=test1.cpp ../src/hostaddress.cpp ../include/hostaddress.h\
 all : test1
 
 test1 : test1.cpp
-	g++ -o test1 ${SRC}
+	g++ -o test1 ${SRC} && ./test1 && rm test1
+	
+	

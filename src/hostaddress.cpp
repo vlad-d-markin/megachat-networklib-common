@@ -1,4 +1,5 @@
 #include "../include/hostaddress.h"
+#include "../include/exeption.h"
 
 #include <string.h>
 #include <exception>
@@ -57,6 +58,6 @@ void HostAddress::getAddrInfo(const std::string& address, const std::string& por
     hints.ai_socktype = SOCK_STREAM;
     
     if((status = getaddrinfo(node, service, &hints, &m_addrinfo)) != 0) {
-        throw std::string(gai_strerror(status));
+        throw Exeption(gai_strerror(status));
     }
 }

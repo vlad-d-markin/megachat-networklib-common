@@ -22,10 +22,13 @@ class TcpSocket;
 class TcpSocket {
 private:
     int m_socket_d;
+    bool m_is_blocking;
     
 public:
     TcpSocket();
     virtual ~TcpSocket();
+    
+    void SetBlocking(bool blocking);
     
     void Bind(const HostAddress& address);
     void Listen(unsigned int backlog);
@@ -37,6 +40,10 @@ public:
     int Receive(char * data, int len);
     
     void Close();    
+    
+private:
+    void _SetBlocking();
+    void _SetNonBlocking();
 };
 
 
@@ -49,6 +56,11 @@ public:
     
 private:
     static std::string getErrorDescription(int error_code);
+};
+
+class TcpSocketWouldBlock : public TcpSocketExeption {
+public:
+    TcpSocketWouldBlock() : TcpSocketExeption("No reason") {}
 };
 
 #endif
