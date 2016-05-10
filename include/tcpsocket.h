@@ -22,23 +22,87 @@ class TcpSocket;
 class TcpSocket {
 private:
     int m_socket_d;
+    
     bool m_is_blocking;
+    bool m_is_listening;
     
 public:
     TcpSocket();
     virtual ~TcpSocket();
     
+    
+    
+    /**
+     * @brief Set socket mode
+     * @param blocking Whether socket should be in blocking mode or not
+     */
     void SetBlocking(bool blocking);
     
+    
+    
+    /**
+     * @brief Bind socket to a certain address
+     * @param address Address to which bind socket
+     */
     void Bind(const HostAddress& address);
+    
+    
+    
+    /**
+     * @brief Swith socket to listening mode
+     * @param backlog Backlog size
+     */
     void Listen(unsigned int backlog);
+    
+    
+    
+    /**
+     * @brief Connect to certain address
+     * @param address Self explaining
+     */
     void Connect(const HostAddress& address);
+    
+    
+    
+    /**
+     * @brief If socket is in listening mode accept new connection
+     * @return Connection with a client
+     */
     TcpSocket * Accept();
+    
+    
+    
+    /**
+     * @brief Set file descriptor manually
+     * @param fd
+     */
     void SetSocketFd(int fd);
     
+    
+    
+    /**
+     * @brief Send data to socket
+     * @param data
+     * @param len
+     * @return Bytes sent
+     */
     int Send(const char * data, int len);
+    
+    
+    
+    /**
+     * @brief Receive data from socket
+     * @param data
+     * @param len
+     * @return Bytes received
+     */
     int Receive(char * data, int len);
     
+
+    
+    /**
+     * @brief Close connection (stow listening)
+     */
     void Close();    
     
 private:
@@ -48,6 +112,8 @@ private:
 
 
 
+// =============================================================================
+// Exeptions
 class TcpSocketExeption : public Exeption {
 public:
     TcpSocketExeption(std::string reason = getErrorDescription(errno));

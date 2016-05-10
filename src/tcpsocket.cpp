@@ -2,6 +2,8 @@
 
 TcpSocket::TcpSocket() {
     m_is_blocking = true;
+    m_is_listening = false;
+    
     m_socket_d = socket(AF_INET, SOCK_STREAM, 0);
     
     if(m_socket_d < 0) {
@@ -11,15 +13,18 @@ TcpSocket::TcpSocket() {
 }
 
 
+
 TcpSocket::~TcpSocket() {
     Close();
 }
+
 
 
 void TcpSocket::SetSocketFd(int fd) {
     Close();
     m_socket_d = fd;
 }
+
 
 
 void TcpSocket::SetBlocking(bool blocking) {
@@ -82,13 +87,17 @@ void TcpSocket::Bind(const HostAddress& address) {
 }
 
 
+
 void TcpSocket::Listen(unsigned int backlog) {
     int status = listen(m_socket_d, backlog);
     
     if(status < 0) {
         throw TcpSocketExeption(errno);
     }
+    
+    m_is_listening = true;
 }
+
 
 
 void TcpSocket::Connect(const HostAddress& address) {
@@ -97,6 +106,8 @@ void TcpSocket::Connect(const HostAddress& address) {
     if(status < 0) {
         throw TcpSocketExeption(errno);
     }
+    
+    m_is_listening = false;
 }
 
 
@@ -104,7 +115,10 @@ void TcpSocket::Connect(const HostAddress& address) {
 void TcpSocket::Close() {
     shutdown(m_socket_d, SHUT_RD);
     close(m_socket_d);
+    
+    m_is_listening = false;
 }
+
 
 
 int TcpSocket::Send(const char * data, int len){
@@ -131,6 +145,8 @@ int TcpSocket::Send(const char * data, int len){
     return bytes_sent;
 }
 
+
+
 int TcpSocket::Receive(char * data, int len) {
     char * receive_buffer = data;
     unsigned int max_data_len = len;
@@ -156,20 +172,46 @@ int TcpSocket::Receive(char * data, int len) {
 }
 
 
+
 TcpSocket *  TcpSocket::Accept() {
+    if(!m_is_listening) {
+        throw TcpSocketExeption("Socket is not in listening mode");
+    }
     
+    struct sockaddr remote_addr;
+    struct socklen_t addr_len;
+    
+//    if(m_is_blocking) {
+//        int new_socket_fd = accept(m_socket_d, &remote_addr, &addr_len);
+//        
+//        if(new_socket_fd < 0) {
+//            throw TcpSocketExeption(errno);
+//        }
+//        
+//        TcpSocket * socket = new TcpSocket();
+//        socket->SetSocketFd(new_socket_fd);
+//        
+//        return socket;
+//    }
+    
+    
+    int new_socket_fd = accept(m_socket_d, &remote_addr, &addr_len);
+    
+    if(new_socket_fd < 0) {
+        switch(errno) {
+            case EWOULDBLOCK:
+                throw TcpSocketWouldBlock();
+                
+            default:
+                throw TcpSocketExeption(errno);
+        }
+    }
+    
+    TcpSocket * socket = new TcpSocket();
+    socket->SetSocketFd(new_socket_fd);
+
+    return socket;  
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
