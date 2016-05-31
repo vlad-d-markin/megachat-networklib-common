@@ -7,7 +7,7 @@ protected:
     IpAddress m_test_address;
 
 public:
-    IpAddressTest() : m_test_address("127.0.0.1") {}
+    IpAddressTest() : m_test_address("127.0.0.1", 8800) {}
 
     void testSetIp(std::string ip)
     {
@@ -30,7 +30,7 @@ public:
     }
 
     struct sockaddr_in getTestingStruct() {
-        IpAddress addr("127.0.0.1");
+        IpAddress addr("127.0.0.1", 800);
         addr.setPort(800);
         return * addr.getSockAddr();
     }

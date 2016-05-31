@@ -4,7 +4,8 @@
 #include <tcpsocket.h>
 
 class ITcpListenerListener {
-    virtual void onAccepted(TcpSocket socket) = 0;
+public:
+    virtual void onAccepted(TcpSocket * socket) = 0;
     virtual void onClosed() = 0;
 };
 

@@ -6,11 +6,13 @@ IpAddress::IpAddress()
     memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
 }
 
+
 /// Create new IP address container from string
-IpAddress::IpAddress(std::string ipaddress)
+IpAddress::IpAddress(std::string ipaddress, int port)
 {
     memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
-    m_sockaddr_inet = ipStrToSockAddr(ipaddress);
+
+    m_sockaddr_inet = ipStrToSockAddr(ipaddress, port);
 }
 
 
@@ -19,7 +21,10 @@ IpAddress::IpAddress(std::string ipaddress)
 IpAddress::IpAddress(const IpAddress &address)
 {
     memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
-    m_sockaddr_inet = address.m_sockaddr_inet;
+
+    m_sockaddr_inet.sin_family = AF_INET;
+    m_sockaddr_inet.sin_addr.s_addr = address.m_sockaddr_inet.sin_addr.s_addr;
+    m_sockaddr_inet.sin_port = address.m_sockaddr_inet.sin_port;
 }
 
 
@@ -30,11 +35,16 @@ IpAddress::~IpAddress() {}
 
 
 /// Convert string with IPv4 address to sockaddr_it structure
-struct sockaddr_in IpAddress::ipStrToSockAddr(const std::string &ipaddress)
+struct sockaddr_in IpAddress::ipStrToSockAddr(const std::string &ipaddress, int port)
 {
     struct sockaddr_in sockaddr_inet;
 
+    memset(&sockaddr_inet, 0, sizeof(struct sockaddr_in));
+
     int result = ::inet_pton(AF_INET, ipaddress.c_str(), &sockaddr_inet);
+
+    sockaddr_inet.sin_family = AF_INET;
+    sockaddr_inet.sin_port = ::htons(port);
 
     if(result == 1) {
         return sockaddr_inet;
@@ -82,9 +92,9 @@ void IpAddress::setPort(int port)
 /// Set IP address
 void IpAddress::setIpAddress(const std::string &ipaddress)
 {
-    struct sockaddr_in new_sockaddr = ipStrToSockAddr(ipaddress);
+    struct sockaddr_in new_sockaddr = ipStrToSockAddr(ipaddress, getPort());
     m_sockaddr_inet.sin_addr = new_sockaddr.sin_addr;
-    m_sockaddr_inet.sin_family = new_sockaddr.sin_family;
+    m_sockaddr_inet.sin_family = AF_INET;
 }
 
 
@@ -104,5 +114,13 @@ void IpAddress::setIpAddress(sockaddr_in addr, socklen_t addrlen)
 
 std::string IpAddress::toString() const
 {
-    return std::string("IpAddress:toString is not yet implemented.");
+    char * ip = inet_ntoa(m_sockaddr_inet.sin_addr);
+
+    return std::string(ip) + ":" + std::to_string(getPort());
+}
+
+
+IpAddress IpAddress::inAddrAny()
+{
+//    return IpAddress("0.0.0.0");
 }

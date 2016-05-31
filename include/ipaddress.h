@@ -27,7 +27,7 @@ public:
      * @brief Create IP address container form string with valid IPv4 address.
      * @param ipaddress String with valid IPv4 address.
      */
-    IpAddress(std::string ipaddress);
+    IpAddress(std::string ipaddress, int port);
 
 
 
@@ -62,8 +62,12 @@ public:
 
     std::string toString() const;
 
+
+    static IpAddress inAddrAny();
+
+
 protected:
-    struct sockaddr_in ipStrToSockAddr(const std::string& ipaddress);
+    struct sockaddr_in ipStrToSockAddr(const std::string& ipaddress, int port);
 
 
 };

@@ -28,6 +28,8 @@ private:
     IpAddress m_remote_address;
 
     bool m_listening;
+
+    bool m_blocking;
     
 public:
     TcpSocket();
@@ -38,6 +40,8 @@ public:
 
     virtual ~TcpSocket();
     
+
+    void setBlocking(bool is_blocking);
 
 
     void setSocketDescriptor(int socket_fd);
@@ -67,12 +71,14 @@ public:
     int send(std::string data);
 
 
-    std::string receive();
+    std::string receive(int maxlen = -1);
 
 
     
 private:
-    void setNonBlocking();
+    void setNonBlockingMode();
+
+    void setBlockingMode();
 
 
 };

@@ -18,17 +18,17 @@ protected:
 
 public:
     explicit Exception(std::string reason) : m_description(reason), m_error_code(0) {}
-    explicit Exception(std::string reason, int error_code) : m_description(reason)
+    explicit Exception(std::string reason, int error_code)
     {
         m_description = reason;
         m_error_code = error_code;
 
         if(error_code != 0)
         {
-            char error_description[512] = { 0 };
-            ::strerror_r(error_code, error_description, 512);
+            char error_description_buff[512];
+            char * descr = ::strerror_r(error_code, error_description_buff, 512);
 
-            m_description += " (" + std::string(error_description) + ")";
+            m_description += " (" + std::string(descr) + ")";
         }
 
     }

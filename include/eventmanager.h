@@ -2,10 +2,15 @@
 #define EVENTMANAGER_H
 
 #include <map>
-
+#include <iostream>
+#include <sys/poll.h>
 
 #include <interfaces/ipollingclient.h>
+#include <exceptions/eventmanagerexception.h>
 
+
+#define POLL_SIZE 230
+#define POLL_TIMEOUT 2000
 
 class EventManager {
 private:
