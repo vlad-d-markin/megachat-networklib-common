@@ -1,5 +1,6 @@
 #include <tcpconnection.h>
 
+#include <iostream>
 
 TcpConnection::TcpConnection(const IpAddress &address)
 {
@@ -120,6 +121,7 @@ void TcpConnection::onOut()
     switch (m_connection_state) {
     case OPENING:
         m_connection_state = ACTIVE;
+        m_listener->onOpened();
         break;
 
     case ACTIVE:

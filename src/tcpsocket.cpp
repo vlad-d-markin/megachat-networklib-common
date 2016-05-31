@@ -1,5 +1,6 @@
 #include <tcpsocket.h>
 
+#include <iostream>
 
 TcpSocket::TcpSocket()
 {
@@ -71,11 +72,11 @@ void TcpSocket::connect(const IpAddress &ipaddress)
     int rc = ::connect(m_socket_fd, remote_addr, sizeof(struct sockaddr_in));
 
     m_remote_address = ipaddress;
+
     if(rc != 0) {
         switch (errno) {
         case EINPROGRESS:
             return;
-            break;
 
         default:
             throw TcpSocketException("Failed to connect", errno);
