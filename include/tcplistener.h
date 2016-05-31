@@ -19,6 +19,9 @@ public:
     virtual void listen(int port);
 
 
+    virtual void close();
+
+
     virtual int getSocket();
 
 

@@ -7,7 +7,6 @@ TcpSocket::TcpSocket()
     m_socket_fd = ::socket(AF_INET, SOCK_STREAM, 0);
 
     m_listening = false;
-
     m_blocking = true;
 }
 
@@ -18,7 +17,6 @@ TcpSocket::TcpSocket(int socket_fd, const IpAddress &remote_addr)
     m_remote_address = remote_addr;
 
     m_listening = false;
-
     m_blocking = true;
 }
 
@@ -29,6 +27,7 @@ TcpSocket::~TcpSocket()
 }
 
 
+// Switch IO mode
 void TcpSocket::setBlocking(bool is_blocking)
 {
     if(m_blocking == is_blocking)
@@ -43,6 +42,8 @@ void TcpSocket::setBlocking(bool is_blocking)
 }
 
 
+
+// Set descriptor
 void TcpSocket::setSocketDescriptor(int fd)
 {
     ::close(m_socket_fd);
@@ -51,6 +52,7 @@ void TcpSocket::setSocketDescriptor(int fd)
 
 
 
+// Get descriptor
 int TcpSocket::getSocketDescriptor()
 {
     return m_socket_fd;
@@ -64,6 +66,11 @@ bool TcpSocket::isListening()
 }
 
 
+IpAddress TcpSocket::remoteAddress()
+{
+    return m_remote_address;
+}
+
 
 void TcpSocket::connect(const IpAddress &ipaddress)
 {
@@ -76,6 +83,7 @@ void TcpSocket::connect(const IpAddress &ipaddress)
     if(rc != 0) {
         switch (errno) {
         case EINPROGRESS:
+            // Socket is connectiong, POLLOUT indicate that connection established
             return;
 
         default:
@@ -202,6 +210,7 @@ void TcpSocket::setNonBlockingMode() {
         throw TcpSocketException("Failed to set non-blocking mode", errno);
     }
 }
+
 
 
 void TcpSocket::setBlockingMode() {

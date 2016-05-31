@@ -3,7 +3,6 @@
 
 #include <string>
 
-
 #include <interfaces/itcpconnection.h>
 #include <tcpsocket.h>
 #include <interfaces/itcpconnectionlistener.h>
@@ -11,15 +10,17 @@
 #include <ipaddress.h>
 #include <eventmanager.h>
 
+
+
 class TcpConnection : public ITcpConnection, public IPollingClient {
 public:
     TcpConnection(const IpAddress& address);
 
-    TcpConnection(TcpSocket * socket, const IpAddress &remote_address);
+    TcpConnection(TcpSocket * socket);
 
-    void setEventManager(EventManager * event_manager);
+    virtual void setEventManager(EventManager * event_manager);
 
-    void setListener(ITcpConnectionListener * listener);
+    virtual void setListener(ITcpConnectionListener * listener);
 
     virtual void open();
 
@@ -33,7 +34,7 @@ public:
 
     virtual void onError();
 
-    virtual int getSocket();
+    virtual int  getSocket();
 
     virtual bool isPollingOut();
 

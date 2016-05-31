@@ -4,6 +4,7 @@
 class ITcpListener {
 public:
     virtual void listen(int port) = 0;
+    virtual void close() = 0;
 };
 
 #endif

@@ -9,10 +9,10 @@ TcpConnection::TcpConnection(const IpAddress &address)
 }
 
 
-TcpConnection::TcpConnection(TcpSocket *socket, const IpAddress &remote_address)
+TcpConnection::TcpConnection(TcpSocket *socket)
 {
     m_socket = socket;
-    m_remote_address = remote_address;
+    m_remote_address = socket->remoteAddress();
 }
 
 

@@ -1,6 +1,7 @@
 #include <eventmanager.h>
 
-#include <iostream>
+
+
 
 EventManager::EventManager()
 {
