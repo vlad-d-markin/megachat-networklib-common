@@ -57,6 +57,9 @@ public:
     void setIpAddress(const IpAddress &ipaddress);
 
 
+    void setIpAddress(struct sockaddr_in addr, socklen_t addrlen);
+
+
     std::string toString() const;
 
 protected:

@@ -17,15 +17,25 @@
 #include <ipaddress.h>
 
 
+#define TCP_SOCKET_LISTEN_BACKLOG 100
+#define TCP_SOCKET_RECEIVE_BUFFER_SIZE 1024
+
 
 class TcpSocket {
 private:
     int m_socket_fd;
     
     IpAddress m_remote_address;
+
+    bool m_listening;
     
 public:
     TcpSocket();
+
+
+    TcpSocket(int socket_fd, const IpAddress &remote_addr);
+
+
     virtual ~TcpSocket();
     
 
@@ -33,19 +43,38 @@ public:
     void setSocketDescriptor(int socket_fd);
 
 
-
     int getSocketDescriptor();
+
+
+    bool isListening();
 
 
     void connect(const IpAddress& ipaddress);
 
 
     void bind(const IpAddress& ipaddress);
+
+
+    void listen();
+
+
+    TcpSocket * accept();
+
+
+    void close();
+
+
+    int send(std::string data);
+
+
+    std::string receive();
+
+
     
-//private:
-//    void _SetBlocking();
-//    void _SetNonBlocking();
-//    void _SetRemoteAddress(struct sockaddr_storage remote_addr, socklen_t addr_len);
+private:
+    void setNonBlocking();
+
+
 };
 
 

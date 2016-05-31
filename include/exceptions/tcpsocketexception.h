@@ -9,4 +9,11 @@ public:
     TcpSocketException(std::string reason, int error_code) : Exception(reason, error_code) {}
 };
 
+
+class TcpSocketWouldBlock : public TcpSocketException {
+public:
+    TcpSocketWouldBlock() : TcpSocketException("Socket would block") {}
+};
+
+
 #endif

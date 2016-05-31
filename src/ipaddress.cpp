@@ -95,6 +95,12 @@ void IpAddress::setIpAddress(const IpAddress &ipaddress)
 }
 
 
+void IpAddress::setIpAddress(sockaddr_in addr, socklen_t addrlen)
+{
+    memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
+    memcpy(&m_sockaddr_inet, &addr, addrlen);
+}
+
 
 std::string IpAddress::toString() const
 {
