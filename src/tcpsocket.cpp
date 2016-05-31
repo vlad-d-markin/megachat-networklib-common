@@ -1,8 +1,16 @@
 #include "../include/tcpsocket.h"
 
+
+#include <stdlib.h>
+#include <string.h>
+#include<iostream>
+
 TcpSocket::TcpSocket() {
     m_is_blocking = true;
     m_is_listening = false;
+    
+    memset(&m_remote_addr, 0, sizeof(m_remote_addr));
+    m_remote_addr_len = sizeof(m_remote_addr);
     
     m_socket_d = socket(AF_INET, SOCK_STREAM, 0);
     
@@ -107,6 +115,13 @@ void TcpSocket::Connect(const HostAddress& address) {
         throw TcpSocketExeption(errno);
     }
     
+    
+    // Is it bad?
+    struct sockaddr_storage remote;
+    memcpy(&remote, address.m_addrinfo->ai_addr, address.m_addrinfo->ai_addrlen);
+    
+    _SetRemoteAddress(remote, address.m_addrinfo->ai_addrlen);
+    
     m_is_listening = false;
 }
 
@@ -178,24 +193,11 @@ TcpSocket *  TcpSocket::Accept() {
         throw TcpSocketExeption("Socket is not in listening mode");
     }
     
-    struct sockaddr remote_addr;
-    struct socklen_t addr_len;
+    struct sockaddr_storage remote_addr;
+    socklen_t addr_len;
+ 
     
-//    if(m_is_blocking) {
-//        int new_socket_fd = accept(m_socket_d, &remote_addr, &addr_len);
-//        
-//        if(new_socket_fd < 0) {
-//            throw TcpSocketExeption(errno);
-//        }
-//        
-//        TcpSocket * socket = new TcpSocket();
-//        socket->SetSocketFd(new_socket_fd);
-//        
-//        return socket;
-//    }
-    
-    
-    int new_socket_fd = accept(m_socket_d, &remote_addr, &addr_len);
+    int new_socket_fd = accept(m_socket_d, (struct sockaddr *)&remote_addr, &addr_len);
     
     if(new_socket_fd < 0) {
         switch(errno) {
@@ -209,11 +211,21 @@ TcpSocket *  TcpSocket::Accept() {
     
     TcpSocket * socket = new TcpSocket();
     socket->SetSocketFd(new_socket_fd);
+    socket->_SetRemoteAddress(remote_addr, addr_len);
 
     return socket;  
 }
 
 
+
+void TcpSocket::_SetRemoteAddress(struct sockaddr_storage remote_addr, socklen_t addr_len) {
+    m_remote_addr = remote_addr;
+    m_remote_addr_len = addr_len;
+    
+//    HostAddress h("google.com", "80");
+//    h.setAddrInfo(&m_remote_addr, m_remote_addr_len);
+//    std::cout << "Remote addr: " << h.toString() << std::endl;
+}
 
 
 
@@ -228,7 +240,7 @@ TcpSocketExeption::TcpSocketExeption(int error_code) : Exeption(getErrorDescript
 TcpSocketExeption::~TcpSocketExeption() {}
 
 std::string TcpSocketExeption::getErrorDescription(int error_code) {
-    return strerror(error_code);
+    return std::string("TcpSocketExeption:") + strerror(error_code);
 }
 
 

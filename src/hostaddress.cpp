@@ -7,6 +7,11 @@
 #include <arpa/inet.h>
 
 
+HostAddress::HostAddress() {
+    m_addrinfo = new struct addrinfo;
+    memset(m_addrinfo, 0, sizeof(struct addrinfo));
+}
+
 HostAddress::HostAddress(const std::string& address, const std::string& port) {
     getAddrInfo(address, port);
 }
@@ -34,7 +39,11 @@ std::string HostAddress::toString() const {
     char ipAddress[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(ipv4->sin_addr), ipAddress, INET_ADDRSTRLEN);
     
+    int port = ntohs(ipv4->sin_port);
+    
     addr = ipAddress;
+    addr += ":";
+    addr += std::to_string(port);
     
     return addr;    
 }
@@ -60,4 +69,17 @@ void HostAddress::getAddrInfo(const std::string& address, const std::string& por
     if((status = getaddrinfo(node, service, &hints, &m_addrinfo)) != 0) {
         throw Exeption(gai_strerror(status));
     }
+}
+
+
+// Not working and not needed
+void HostAddress::setAddrInfo(struct sockaddr_storage* addr, socklen_t addrlen) {    
+    freeaddrinfo(m_addrinfo);
+    
+    memset(m_addrinfo, 0, sizeof(struct addrinfo));
+    
+    m_addrinfo->ai_family = AF_INET;
+    m_addrinfo->ai_socktype = SOCK_STREAM;
+    m_addrinfo->ai_addr = (struct sockaddr *) addr;
+    m_addrinfo->ai_addrlen = addrlen;
 }

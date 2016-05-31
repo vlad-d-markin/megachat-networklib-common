@@ -17,6 +17,8 @@ private:
     struct addrinfo * m_addrinfo;
     
 public:
+    HostAddress();
+    
     /**
      * @brief Create new object containing struct sockaddr from given hostname or IP
      * Actually struct addrinfo
@@ -46,6 +48,7 @@ public:
     
 private:
     void getAddrInfo(const std::string& address, const std::string& port);
+    void setAddrInfo(struct sockaddr_storage * addr, socklen_t addrlen);
     
 };
 

@@ -26,6 +26,9 @@ private:
     bool m_is_blocking;
     bool m_is_listening;
     
+    struct sockaddr_storage m_remote_addr;
+    socklen_t m_remote_addr_len;
+    
 public:
     TcpSocket();
     virtual ~TcpSocket();
@@ -108,6 +111,7 @@ public:
 private:
     void _SetBlocking();
     void _SetNonBlocking();
+    void _SetRemoteAddress(struct sockaddr_storage remote_addr, socklen_t addr_len);
 };
 
 
