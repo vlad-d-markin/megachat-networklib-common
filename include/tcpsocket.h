@@ -22,19 +22,25 @@ class TcpSocket {
 private:
     int m_socket_fd;
     
-    bool m_is_blocking;
-    bool m_is_listening;
+    IpAddress m_remote_address;
     
 public:
     TcpSocket();
     virtual ~TcpSocket();
     
+
+
     void setSocketDescriptor(int socket_fd);
+
+
 
     int getSocketDescriptor();
 
 
     void connect(const IpAddress& ipaddress);
+
+
+    void bind(const IpAddress& ipaddress);
     
 //private:
 //    void _SetBlocking();

@@ -32,13 +32,25 @@ int TcpSocket::getSocketDescriptor()
 
 void TcpSocket::connect(const IpAddress &ipaddress)
 {
-    struct sockaddr * remote_addr = static_cast<struct sockaddr *> (ipaddress.getSockAddr());
+    const struct sockaddr * remote_addr = (const struct sockaddr *) (ipaddress.getSockAddr());
 
     if(::connect(m_socket_fd, remote_addr, sizeof(struct sockaddr_in)) < 0) {
         throw TcpSocketException("Failed to connect", errno);
     }
+
+    m_remote_address = ipaddress;
 }
 
+
+
+void TcpSocket::bind(const IpAddress &ipaddress)
+{
+    const struct sockaddr * remote_addr = (const struct sockaddr *) (ipaddress.getSockAddr());
+
+    if(::bind(m_socket_fd, remote_addr, sizeof(struct sockaddr_in)) < 0) {
+        throw TcpSocketException("Failed to bind", errno);
+    }
+}
 
 
 

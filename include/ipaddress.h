@@ -20,6 +20,9 @@ protected:
     struct sockaddr_in m_sockaddr_inet;    ///< Sockaddr structure
 
 public:
+    IpAddress();
+
+
     /**
      * @brief Create IP address container form string with valid IPv4 address.
      * @param ipaddress String with valid IPv4 address.
@@ -50,6 +53,11 @@ public:
 
     void setIpAddress(const std::string &ipaddress);
 
+
+    void setIpAddress(const IpAddress &ipaddress);
+
+
+    std::string toString() const;
 
 protected:
     struct sockaddr_in ipStrToSockAddr(const std::string& ipaddress);

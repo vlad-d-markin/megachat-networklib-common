@@ -1,6 +1,11 @@
 #include <ipaddress.h>
 
 
+IpAddress::IpAddress()
+{
+    memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
+}
+
 /// Create new IP address container from string
 IpAddress::IpAddress(std::string ipaddress)
 {
@@ -80,4 +85,18 @@ void IpAddress::setIpAddress(const std::string &ipaddress)
     struct sockaddr_in new_sockaddr = ipStrToSockAddr(ipaddress);
     m_sockaddr_inet.sin_addr = new_sockaddr.sin_addr;
     m_sockaddr_inet.sin_family = new_sockaddr.sin_family;
+}
+
+
+
+void IpAddress::setIpAddress(const IpAddress &ipaddress)
+{
+//    m_sockaddr_inet
+}
+
+
+
+std::string IpAddress::toString() const
+{
+    return std::string("IpAddress:toString is not yet implemented.");
 }
