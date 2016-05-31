@@ -63,7 +63,7 @@ public:
     std::string toString() const;
 
 
-    static IpAddress inAddrAny();
+    static IpAddress inAddrAny(int port);
 
 
 protected:

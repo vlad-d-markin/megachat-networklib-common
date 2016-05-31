@@ -24,6 +24,7 @@ public:
 
         ::inet_pton(AF_INET, "127.0.0.1", &valid);
 
+        valid.sin_family = AF_INET;
         valid.sin_port = ::htons(800);
 
         return valid;
@@ -31,7 +32,6 @@ public:
 
     struct sockaddr_in getTestingStruct() {
         IpAddress addr("127.0.0.1", 800);
-        addr.setPort(800);
         return * addr.getSockAddr();
     }
 
@@ -78,7 +78,7 @@ TEST_F(IpAddressTest, TestValidationValidPorts) {
 
 
 TEST_F(IpAddressTest, TestLoopBackAddressMatch) {
-//    ASSERT_TRUE(testMatch());
+    ASSERT_TRUE(testMatch());
 }
 
 

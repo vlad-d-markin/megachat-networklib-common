@@ -34,24 +34,7 @@ public:
 
 
     void testSocket() {
-        try {
-            IpAddress addr("127.0.0.1", 80);
 
-            TcpSocket sock;
-            sock.setBlocking(true);
-
-            sock.connect(addr);
-
-            sock.send("GET / HTTP/1.0\r\n\r\n");
-
-            std::cout << sock.receive(100) << std::endl;
-
-            sock.close();
-        }
-        catch(TcpSocketException &e) {
-            std::cerr << e.description() << std::endl;
-            FAIL();
-        }
     }
 
     virtual void onOpened() {

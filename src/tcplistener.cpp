@@ -10,8 +10,7 @@ TcpListener::TcpListener() {
 
 void TcpListener::listen(int port)
 {
-    IpAddress addr_to_listen = IpAddress::inAddrAny();
-    addr_to_listen.setPort(port);
+    IpAddress addr_to_listen = IpAddress::inAddrAny(port);
 
     m_socket.bind(addr_to_listen);
 

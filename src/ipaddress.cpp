@@ -22,9 +22,7 @@ IpAddress::IpAddress(const IpAddress &address)
 {
     memset(&m_sockaddr_inet, 0, sizeof(struct sockaddr_in));
 
-    m_sockaddr_inet.sin_family = AF_INET;
-    m_sockaddr_inet.sin_addr.s_addr = address.m_sockaddr_inet.sin_addr.s_addr;
-    m_sockaddr_inet.sin_port = address.m_sockaddr_inet.sin_port;
+    m_sockaddr_inet = address.m_sockaddr_inet;
 }
 
 
@@ -101,7 +99,7 @@ void IpAddress::setIpAddress(const std::string &ipaddress)
 
 void IpAddress::setIpAddress(const IpAddress &ipaddress)
 {
-//    m_sockaddr_inet
+    m_sockaddr_inet = *ipaddress.getSockAddr();
 }
 
 
@@ -120,7 +118,7 @@ std::string IpAddress::toString() const
 }
 
 
-IpAddress IpAddress::inAddrAny()
+IpAddress IpAddress::inAddrAny(int port)
 {
-//    return IpAddress("0.0.0.0");
+    return IpAddress("0.0.0.0", port);
 }
