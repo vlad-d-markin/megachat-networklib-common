@@ -2,6 +2,7 @@
 #define IBYTECONNECTIONLISTENER_H
 
 #include <string>
+#include <bytebuffer.h>
 
 class IByteConnectionListener {
 public:
@@ -11,7 +12,7 @@ public:
     virtual void onClosed() = 0;
 
 
-    virtual void onReceived(std::string data) = 0;
+    virtual void onReceived(ByteBuffer data) = 0;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef TCPCONNECTION_H
 #define TCPCONNECTION_H
 
-#include <string>
+#include <vector>
 
 #include <interfaces/itcpconnection.h>
 #include <tcpsocket.h>
@@ -9,6 +9,7 @@
 #include <interfaces/ipollingclient.h>
 #include <ipaddress.h>
 #include <eventmanager.h>
+#include <bytebuffer.h>
 
 
 
@@ -26,7 +27,7 @@ public:
 
     virtual void close();
 
-    virtual void send(std::string data);
+    virtual void send(ByteBuffer data);
 
     virtual void onIn();
 
@@ -50,7 +51,7 @@ protected:
     TcpSocket *                 m_socket;
     ITcpConnectionListener *    m_listener;
     State                       m_connection_state;
-    std::string                 m_send_buffer;
+    ByteBuffer                  m_send_buffer;
     EventManager *              m_event_manager;
 
 };

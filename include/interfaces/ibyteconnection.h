@@ -2,6 +2,7 @@
 #define IBYTECONNECTION_H
 
 #include <string>
+#include <bytebuffer.h>
 
 class IByteConnection {
 public:
@@ -11,7 +12,7 @@ public:
     virtual void close() = 0;
 
 
-    virtual void send(std::string data) = 0;
+    virtual void send(ByteBuffer data) = 0;
 };
 
 #endif

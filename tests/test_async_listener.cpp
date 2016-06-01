@@ -18,11 +18,11 @@ public:
     BaseTestState(TestHelper * helper) : m_helper(helper) {}
 
     virtual void onServerAccepted(TcpSocket * socket) { FAIL() << "State received wrong event"; }
-    virtual void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
+    virtual void onServerReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     virtual void onServerClosed() { FAIL() << "State received wrong event"; }
 
     virtual void onClientOpened() { FAIL() << "State received wrong event"; }
-    virtual void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
+    virtual void onClientReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     virtual void onClientClosed() { FAIL() << "State received wrong event"; }
 };
 
@@ -43,10 +43,10 @@ public:
     }
 
 
-    void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
+    void onServerReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     void onServerClosed() { FAIL() << "State received wrong event"; }
     void onClientOpened() {  }
-    void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
+    void onClientReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     void onClientClosed() { FAIL() << "State received wrong event"; }
 };
 
@@ -58,10 +58,10 @@ public:
     void onServerAccepted(TcpSocket * socket) { FAIL() << "State received wrong event"; }
 
 
-    void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
+    void onServerReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     void onServerClosed() { FAIL() << "State received wrong event"; }
     void onClientOpened() {  }
-    void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
+    void onClientReceived(ByteBuffer data) { FAIL() << "State received wrong event"; }
     void onClientClosed() { FAIL() << "State received wrong event"; }
 };
 
@@ -90,7 +90,7 @@ public:
             (*m_state)->onClientClosed();
         }
 
-        virtual void onReceived(std::string data) {
+        virtual void onReceived(ByteBuffer data) {
             (*m_state)->onClientReceived(data);
         }
     };
@@ -109,7 +109,7 @@ public:
             (*m_state)->onServerClosed();
         }
 
-        virtual void onReceived(std::string data) {
+        virtual void onReceived(ByteBuffer data) {
             (*m_state)->onServerReceived(data);
         }
     };

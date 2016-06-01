@@ -151,9 +151,9 @@ void TcpSocket::close()
 
 
 
-int TcpSocket::send(std::string data)
+int TcpSocket::send(const ByteBuffer &data)
 {
-    int bytes_sent = ::write(m_socket_fd, data.c_str(), data.size());
+    int bytes_sent = ::write(m_socket_fd, data.rawData(), data.size());
 
     if(bytes_sent < 0) {
         switch (errno) {
@@ -172,7 +172,7 @@ int TcpSocket::send(std::string data)
 
 
 
-std::string TcpSocket::receive(int maxlen)
+ByteBuffer TcpSocket::receive(int maxlen)
 {
     char buffer[TCP_SOCKET_RECEIVE_BUFFER_SIZE];
 
@@ -192,7 +192,7 @@ std::string TcpSocket::receive(int maxlen)
         }
     }
 
-    return std::string(buffer, bytes_received);
+    return ByteBuffer(buffer, bytes_received);
 }
 
 

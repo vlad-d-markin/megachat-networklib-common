@@ -73,10 +73,10 @@ void TcpConnection::close()
 }
 
 
-void TcpConnection::send(std::string data)
+void TcpConnection::send(ByteBuffer data)
 {
     if(m_send_buffer.size() > 0) {
-        m_send_buffer += data;
+        m_send_buffer.append(data);
         return;
     }
 
@@ -84,12 +84,14 @@ void TcpConnection::send(std::string data)
         int bytes_sent = m_socket->send(data);
 
         // If less bytes were sent than needed,place the rest in buffer
-        if(bytes_sent < data.size())
-            m_send_buffer += data.substr(bytes_sent);
+        if(bytes_sent < data.size()) {
+            ByteBuffer rest = data.extractFrom(bytes_sent);
+            m_send_buffer.append(rest);/*data.substr(bytes_sent));*/
+        }
     }
     catch(TcpSocketWouldBlock &e) {
-        // Inpossible to send data right now, put it in buffer
-        m_send_buffer += data;
+        // Impossible to send data right now, put it in buffer
+        m_send_buffer.append(data);
     }
     catch(TcpSocketException &e) {
         // Error occurred
@@ -102,7 +104,7 @@ void TcpConnection::send(std::string data)
 void TcpConnection::onIn()
 {
     try {
-        std::string incoming_data = m_socket->receive();
+        ByteBuffer incoming_data = m_socket->receive();
 
         m_listener->onReceived(incoming_data);
     }

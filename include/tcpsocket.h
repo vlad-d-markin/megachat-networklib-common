@@ -10,11 +10,12 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
-#include <string>
+#include <vector>
 
 
 #include <exceptions/tcpsocketexception.h>
 #include <ipaddress.h>
+#include <bytebuffer.h>
 
 
 #define TCP_SOCKET_LISTEN_BACKLOG 100
@@ -130,7 +131,7 @@ public:
      * @param data Data to send
      * @return Number of bytes sent
      */
-    int send(std::string data);
+    int send(const ByteBuffer& data);
 
 
 
@@ -139,7 +140,7 @@ public:
      * @param maxlen Maximum bytes to receive from peer. -1 for max;
      * @return Data received from peer
      */
-    std::string receive(int maxlen = -1);
+    ByteBuffer receive(int maxlen = -1);
 
 
     

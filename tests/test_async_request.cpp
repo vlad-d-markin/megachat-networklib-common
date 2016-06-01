@@ -50,7 +50,7 @@ public:
         m_evmanager->terminate();
     }
 
-    virtual void onReceived(std::string data) {
+    virtual void onReceived(ByteBuffer data) {
         FAIL() << "No data should arrive";
     }
 
@@ -101,10 +101,12 @@ public:
         SUCCEED();
     }
 
-    virtual void onReceived(std::string data) {
+    virtual void onReceived(ByteBuffer data) {
+//        std::cerr << data.toString();
+
         m_conn->close();
         if(data.size() <= 0)
-            FAIL() << "No datareceived";
+            FAIL() << "No data received";
     }
 
 };
