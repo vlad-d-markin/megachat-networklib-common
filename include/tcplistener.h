@@ -19,6 +19,9 @@ public:
     virtual void listen(int port);
 
 
+    virtual void setListener(ITcpListenerListener * listener);
+
+
     virtual void close();
 
 

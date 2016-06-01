@@ -4,6 +4,8 @@
 
 class IChatConnectionListener {
 public:
+    virtual void onOpened();
+    virtual void onClosed();
     virtual void onLogin(std::string username, std::string password) = 0;
     virtual void onLoginAck() = 0;
     virtual void onLogout() = 0;

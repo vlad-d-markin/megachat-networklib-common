@@ -18,6 +18,12 @@ void TcpListener::listen(int port)
 }
 
 
+void TcpListener::setListener(ITcpListenerListener *listener)
+{
+    m_listener = listener;
+}
+
+
 void TcpListener::close()
 {
     m_socket.close();
