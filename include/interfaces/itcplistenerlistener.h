@@ -1,7 +1,8 @@
 #ifndef ITCPLISTENERLISTENER_H
 #define ITCPLISTENERLISTENER_H
 
-#include <tcpsocket.h>
+#include "../tcpsocket.h"
+
 
 class ITcpListenerListener {
 public:

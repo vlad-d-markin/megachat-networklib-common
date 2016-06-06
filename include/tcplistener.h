@@ -1,10 +1,13 @@
 #ifndef TCPLISTENER_H
 #define TCPLISTENER_H
 
-#include <interfaces/itcplistener.h>
-#include <interfaces/ipollingclient.h>
-#include <interfaces/itcplistenerlistener.h>
-#include <tcpsocket.h>
+
+#include "interfaces/itcplistener.h"
+#include "interfaces/ipollingclient.h"
+#include "interfaces/itcplistenerlistener.h"
+#include "tcpsocket.h"
+
+
 
 class TcpListener : public ITcpListener, public IPollingClient {
 protected:

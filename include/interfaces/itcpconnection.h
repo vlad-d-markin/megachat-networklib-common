@@ -1,9 +1,11 @@
 #ifndef ITCPCONNECTION_H
 #define ITCPCONNECTION_H
 
-#include <interfaces/ibyteconnection.h>
-#include <interfaces/itcpconnectionlistener.h>
-#include <eventmanager.h>
+#include "ibyteconnection.h"
+#include "itcpconnectionlistener.h"
+#include "../eventmanager.h"
+
+
 
 class ITcpConnection : public IByteConnection {
 public:

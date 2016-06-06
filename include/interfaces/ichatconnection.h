@@ -5,7 +5,8 @@
 #include <vector>
 
 
-#include <structuser.h>
+#include "../structuser.h"
+
 
 
 class IChatConnection {

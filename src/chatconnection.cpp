@@ -1,5 +1,7 @@
 #include <chatconnection.h>
 
+
+
 ChatConnection::ChatConnection(IByteConnection *connection, IChatConnectionListener *listener)
 {
     m_connection = connection;

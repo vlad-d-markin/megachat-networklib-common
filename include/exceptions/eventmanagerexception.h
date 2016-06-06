@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <exceptions/exception.h>
+#include "exception.h"
 
 
 class EventManagerException : public Exception {

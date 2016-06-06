@@ -1,10 +1,12 @@
 #ifndef CHATCONNECTION_H
 #define CHATCONNECTION_H
 
-#include <interfaces/ichatconnection.h>
-#include <interfaces/ichatconnectionlistener.h>
-#include <interfaces/ibyteconnectionlistener.h>
-#include <interfaces/ibyteconnection.h>
+
+
+#include "interfaces/ichatconnection.h"
+#include "interfaces/ichatconnectionlistener.h"
+#include "interfaces/ibyteconnectionlistener.h"
+#include "interfaces/ibyteconnection.h"
 
 
 

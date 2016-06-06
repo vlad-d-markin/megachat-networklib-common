@@ -5,8 +5,9 @@
 #include <iostream>
 #include <sys/poll.h>
 
-#include <interfaces/ipollingclient.h>
-#include <exceptions/eventmanagerexception.h>
+
+#include "interfaces/ipollingclient.h"
+#include "exceptions/eventmanagerexception.h"
 
 
 #define POLL_SIZE 230

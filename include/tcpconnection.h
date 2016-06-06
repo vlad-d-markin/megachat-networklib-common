@@ -3,12 +3,12 @@
 
 #include <string>
 
-#include <interfaces/itcpconnection.h>
-#include <tcpsocket.h>
-#include <interfaces/itcpconnectionlistener.h>
-#include <interfaces/ipollingclient.h>
-#include <ipaddress.h>
-#include <eventmanager.h>
+#include "interfaces/itcpconnection.h"
+#include "tcpsocket.h"
+#include "interfaces/itcpconnectionlistener.h"
+#include "interfaces/ipollingclient.h"
+#include "ipaddress.h"
+#include "eventmanager.h"
 
 
 

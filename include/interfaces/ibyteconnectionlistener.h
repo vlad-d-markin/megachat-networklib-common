@@ -3,6 +3,8 @@
 
 #include <string>
 
+
+
 class IByteConnectionListener {
 public:
     virtual void onOpened() = 0;

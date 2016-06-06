@@ -3,6 +3,8 @@
 
 #include <string>
 
+
+
 class IByteConnection {
 public:
     virtual void open() = 0;
