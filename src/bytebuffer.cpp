@@ -26,6 +26,7 @@ ByteBuffer::ByteBuffer(const char *raw_data, size_t len)
 
 void ByteBuffer::fromRawData(const char *raw_data, size_t len)
 {
+//    m_data.resize(len);
     m_data.insert(m_data.begin(), raw_data, raw_data + len);
     m_data.resize(len);
 }
@@ -51,17 +52,21 @@ void ByteBuffer::appendRaw(const char *raw_data, size_t len)
     const size_t old_size = size();
     m_data.resize(old_size + len);
 
-    m_data.insert(m_data.end(), raw_data, raw_data + len);
+    m_data.insert(m_data.end() - 1, raw_data, raw_data + len);
+
+    m_data.resize(old_size + len);
 }
 
 
 
 void ByteBuffer::appendString(const std::string str)
 {
-    const size_t old_size = size();
-    m_data.resize(old_size + str.length());
+    appendRaw(str.c_str(), str.length());
 
-    m_data.insert(m_data.end(), str.c_str(), str.c_str() + str.length());
+//    const size_t old_size = size();
+
+//    m_data.insert(m_data.end()-1, str.begin(), str.end());
+//    m_data.resize(old_size + str.length() - 1);
 }
 
 

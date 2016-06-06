@@ -1,29 +1,40 @@
 #include <chatpacketbuilder.h>
 
 
-void ChatPacketBuilder::appendByte(std::string &packet, __uint8_t a)
+void ChatPacketBuilder::appendByte(ByteBuffer &packet, __uint8_t a)
 {
-    __uint8_t buffer[5] = {0};
-    buffer[0] = a;
-    packet.append((const char *)buffer);
+    packet.appendRaw((char *)&a, 1);
 }
 
 
-void ChatPacketBuilder::append2Bytes(std::string &packet, __uint16_t a)
+void ChatPacketBuilder::append2Bytes(ByteBuffer &packet, __uint16_t a)
 {
-
+    packet.appendRaw((char *)&a, 2);
+//    const char * d = (char *)&a;
+//    appendByte(packet, d[0]);
+//    appendByte(packet, d[1]);
 }
 
 
-void ChatPacketBuilder::append4Bytes(std::string &packet, __uint32_t)
+void ChatPacketBuilder::append4Bytes(ByteBuffer &packet, __uint32_t a)
 {
-
+    packet.appendRaw((char *)&a, 4);
 }
 
 
 
 
-std::string ChatPacketBuilder::buildLogin(std::string login, std::string password)
+ByteBuffer ChatPacketBuilder::buildLogin(std::string login, std::string password)
 {
+    ByteBuffer login_pack;
+    appendByte(login_pack, LOGIN);
 
+    const short packet_length = 1 + 2 + 2 + login.length() + 2 + password.length();
+    append2Bytes(login_pack, packet_length);
+    append2Bytes(login_pack, login.length());
+//    login_pack.appendRaw(login.c_str(), login.length());
+    append2Bytes(login_pack, password.length());
+//    login_pack.appendString(password);
+
+    return login_pack;
 }

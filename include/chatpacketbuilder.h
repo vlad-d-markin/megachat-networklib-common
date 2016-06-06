@@ -3,15 +3,23 @@
 
 #include <string>
 
+#include <bytebuffer.h>
+
+
 class ChatPacketBuilder {
 protected:
-    static void appendByte(std::string& packet, __uint8_t a);
-    static void append2Bytes(std::string& packet, __uint16_t a);
-    static void append4Bytes(std::string &packet, __uint32_t);
+    static void appendByte(ByteBuffer& packet, __uint8_t a);
+    static void append2Bytes(ByteBuffer& packet, __uint16_t a);
+    static void append4Bytes(ByteBuffer& packet, __uint32_t a);
 
 
 public:
-    static std::string buildLogin(std::string login, std::string password);
+    enum PacketCodes {
+        LOGIN = 0,
+        LOGIN_ACK = 0
+    };
+
+    static ByteBuffer buildLogin(std::string login, std::string password);
 
 };
 
