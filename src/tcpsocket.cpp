@@ -87,7 +87,7 @@ void TcpSocket::connect(const IpAddress &ipaddress)
             return;
 
         default:
-            throw TcpSocketException("Failed to connect", errno);
+            throw TcpSocketException("Failed to connect to " + ipaddress.toString(), errno);
             break;
         }
     }

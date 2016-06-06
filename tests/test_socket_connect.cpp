@@ -2,12 +2,14 @@
 
 #include <tcpsocket.h>
 
+//static const IpAddress addr("93.184.216.34", 80);
+
 TEST(TestSocket, ConnectGoogle) {
     try {
         TcpSocket sock;
         sock.setBlocking(true);
 
-        // google.com
+//         google.com
         IpAddress addr("178.45.249.237", 80);
 
         sock.connect(addr);
@@ -25,7 +27,7 @@ TEST(TestSocket, ConnectWrong) {
         sock.setBlocking(true);
 
         // google.com
-        IpAddress addr("178.45.249.237", 9896);
+        IpAddress addr("127.0.0.1", 9996);
 
         sock.connect(addr);
         sock.close();

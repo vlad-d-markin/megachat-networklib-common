@@ -13,8 +13,8 @@
 #include <string>
 
 
-#include <exceptions/tcpsocketexception.h>
-#include <ipaddress.h>
+#include "exceptions/tcpsocketexception.h"
+#include "ipaddress.h"
 
 
 #define TCP_SOCKET_LISTEN_BACKLOG 100

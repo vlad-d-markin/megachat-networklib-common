@@ -1,5 +1,7 @@
 #include <ipaddress.h>
 
+#include <iostream>
+
 
 IpAddress::IpAddress()
 {
@@ -39,14 +41,11 @@ struct sockaddr_in IpAddress::ipStrToSockAddr(const std::string &ipaddress, int 
 
     memset(&sockaddr_inet, 0, sizeof(struct sockaddr_in));
 
-    int result = ::inet_pton(AF_INET, ipaddress.c_str(), &sockaddr_inet);
+    int result = ::inet_pton(AF_INET, ipaddress.c_str(), &(sockaddr_inet.sin_addr));
 
     sockaddr_inet.sin_family = AF_INET;
     sockaddr_inet.sin_port = ::htons(port);
 
-    if(result == 1) {
-        return sockaddr_inet;
-    }
 
     if(result == 0){
         throw InvalidAddressException("Invalid IP address (" + ipaddress+ ")");
@@ -55,6 +54,8 @@ struct sockaddr_in IpAddress::ipStrToSockAddr(const std::string &ipaddress, int 
     if(result < 0) {
         throw IpAddressException("Invalid address family", errno);
     }
+
+    return sockaddr_inet;
 }
 
 
@@ -112,7 +113,8 @@ void IpAddress::setIpAddress(sockaddr_in addr, socklen_t addrlen)
 
 std::string IpAddress::toString() const
 {
-    char * ip = inet_ntoa(m_sockaddr_inet.sin_addr);
+    char ip[20];
+    strcpy(ip, inet_ntoa(m_sockaddr_inet.sin_addr));
 
     return std::string(ip) + ":" + std::to_string(getPort());
 }

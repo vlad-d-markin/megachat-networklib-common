@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <string.h>
 
 
 #include <exceptions/ipaddressexception.h>
@@ -40,6 +41,7 @@ public:
 
 
     ~IpAddress();
+
 
 
     const struct sockaddr_in * getSockAddr() const;

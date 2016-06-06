@@ -22,7 +22,7 @@ public:
         struct sockaddr_in valid;
         memset(&valid, 0, sizeof(valid));
 
-        ::inet_pton(AF_INET, "127.0.0.1", &valid);
+        ::inet_pton(AF_INET, "127.0.0.1", &(valid.sin_addr));
 
         valid.sin_family = AF_INET;
         valid.sin_port = ::htons(800);
@@ -32,6 +32,7 @@ public:
 
     struct sockaddr_in getTestingStruct() {
         IpAddress addr("127.0.0.1", 800);
+
         return * addr.getSockAddr();
     }
 
