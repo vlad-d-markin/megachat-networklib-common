@@ -121,6 +121,27 @@ ByteBuffer& ByteBuffer::append(const ByteBuffer &buffer)
 
 
 
+ByteBuffer& ByteBuffer::appendByte(u_int8_t byte)
+{
+    return append(&byte, sizeof(uint8_t));
+}
+
+
+
+ByteBuffer& ByteBuffer::append2Bytes(u_int16_t word)
+{
+    return append((uint8_t *) &word, sizeof(uint16_t));
+}
+
+
+
+ByteBuffer& ByteBuffer::append4Bytes(u_int32_t bytes)
+{
+    return append((uint8_t *) &bytes, sizeof(uint32_t));
+}
+
+
+
 const u_int8_t * ByteBuffer::data() const
 {
     return &m_data[0];
@@ -140,6 +161,78 @@ std::string ByteBuffer::toString() const
     return std::string((char *)data(), size());
 }
 
+
+
+u_int8_t ByteBuffer::getByte(size_t at)
+{
+    if(at < 0 || at >= size())
+        throw ByteBufferException("Out of buffer");
+    return m_data[at];
+}
+
+
+
+u_int16_t ByteBuffer::getWord(size_t at)
+{
+    if(at < 0 || at >= size())
+        throw ByteBufferException("Out of buffer");
+
+    u_int16_t d;
+    memcpy(&d, &m_data[at], sizeof(d));
+    return d;
+}
+
+
+
+u_int32_t ByteBuffer::get4Bytes(size_t at)
+{
+    if(at < 0 || at >= size())
+        throw ByteBufferException("Out of buffer");
+
+    u_int32_t d;
+    memcpy(&d, &m_data[at], sizeof(d));
+    return d;
+}
+
+
+
+
+u_int8_t ByteBuffer::popByte()
+{
+    if(size() == 0)
+        throw ByteBufferException("Nothing to pop");
+
+    u_int8_t b = getByte(0);
+    m_data.erase(m_data.begin(), m_data.begin() + sizeof(b));
+
+    return b;
+}
+
+
+
+u_int16_t ByteBuffer::popWord()
+{
+    if(size() == 0)
+        throw ByteBufferException("Nothing to pop");
+
+    u_int16_t b = getWord(0);
+    m_data.erase(m_data.begin(), m_data.begin() + sizeof(b));
+
+    return b;
+}
+
+
+
+u_int32_t ByteBuffer::pop4Bytes()
+{
+    if(size() == 0)
+        throw ByteBufferException("Nothing to pop");
+
+    u_int32_t b = get4Bytes(0);
+    m_data.erase(m_data.begin(), m_data.begin() + sizeof(b));
+
+    return b;
+}
 
 
 

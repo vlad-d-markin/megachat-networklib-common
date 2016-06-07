@@ -102,6 +102,116 @@ TEST(ByteBufferTest, AppendByteBuffer)
 
 
 
+TEST(ByteBufferTest, AppendByte)
+{
+    ByteBuffer bb;
+    u_int8_t valid_data[] = "\x8\x7\x6";
+
+    bb.appendByte(8).appendByte(7).appendByte(6);
+
+    ASSERT_TRUE(memcmp(bb.data(), valid_data, bb.size()) == 0);
+}
+
+
+
+TEST(ByteBufferTest, AppendWord)
+{
+    ByteBuffer bb;
+    u_int16_t valid_data = 1024;
+
+    bb.append2Bytes(valid_data);
+
+    ASSERT_TRUE(memcmp(bb.data(), &valid_data, sizeof(valid_data)) == 0);
+}
+
+
+
+TEST(ByteBufferTest, AppendInt)
+{
+    ByteBuffer bb;
+    u_int32_t valid_data = 102400045;
+
+    bb.append4Bytes(valid_data);
+
+    ASSERT_TRUE(memcmp(bb.data(), &valid_data, sizeof(valid_data)) == 0);
+}
+
+
+
+TEST(ByteBufferTest, GetByte)
+{
+    ByteBuffer bb("abc");
+
+    ASSERT_EQ(bb.getByte(0), 'a');
+    ASSERT_EQ(bb.getByte(1), 'b');
+    ASSERT_EQ(bb.getByte(2), 'c');
+}
+
+
+
+TEST(ByteBufferTest, GetWord)
+{
+    ByteBuffer bb;
+
+    u_int16_t word = 0x4142;
+    bb.set((u_int8_t *) &word, 2);
+
+    ASSERT_EQ(bb.getWord(0), word);
+}
+
+
+
+TEST(ByteBufferTest, GetInt)
+{
+    ByteBuffer bb;
+
+    u_int32_t word = 0x41AC43FF;
+    bb.set((u_int8_t *) &word, 4);
+
+    ASSERT_EQ(bb.get4Bytes(0), word);
+}
+
+
+
+TEST(ByteBufferTest, PopByte)
+{
+    ByteBuffer bb;
+
+    u_int32_t word = 0x41AC43FF;
+    bb.set((u_int8_t *) &word, 4);
+
+    ASSERT_EQ(bb.popByte(), 0xFF);
+    ASSERT_EQ(bb.size(), 3);
+}
+
+
+
+TEST(ByteBufferTest, PopWord)
+{
+    ByteBuffer bb;
+
+    u_int32_t word = 0x41AC43FF;
+    bb.set((u_int8_t *) &word, 4);
+
+    ASSERT_EQ(bb.popWord(), 0x43FF);
+    ASSERT_EQ(bb.size(), 2);
+}
+
+
+
+TEST(ByteBufferTest, PopInt)
+{
+    ByteBuffer bb;
+
+    u_int32_t word = 0x41AC43FF;
+    bb.set((u_int8_t *) &word, 4);
+
+    ASSERT_EQ(bb.pop4Bytes(), word);
+    ASSERT_EQ(bb.size(), 0);
+}
+
+
+
 TEST(ByteBufferTest, ToStringConvertion)
 {
     std::string test_string = "some_text_here";

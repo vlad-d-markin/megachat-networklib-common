@@ -42,6 +42,21 @@ public:
     ByteBuffer& append(const ByteBuffer& buffer);
 
 
+    ByteBuffer& appendByte(u_int8_t byte);
+    ByteBuffer& append2Bytes(u_int16_t word);
+    ByteBuffer& append4Bytes(u_int32_t bytes);
+
+
+    u_int8_t  getByte(size_t at);
+    u_int16_t getWord(size_t at);
+    u_int32_t get4Bytes(size_t at);
+
+
+    u_int8_t  popByte();
+    u_int16_t popWord();
+    u_int32_t pop4Bytes();
+
+
     const u_int8_t * data() const;
 
 
