@@ -97,3 +97,114 @@ ByteBuffer ChatPacketBuilder::buildMessageOutAck(u_int32_t message_id, u_int8_t 
     return packet;
 }
 
+
+
+ByteBuffer ChatPacketBuilder::buildMessageIn(std::string sender, u_int32_t message_id, std::string message)
+{
+    ByteBuffer packet;
+
+    packet.appendByte(MESSAGE_IN);
+    packet.append2Bytes(11 + sender.length() + message.length());
+    packet.append2Bytes(sender.length());
+    packet.append(sender);
+    packet.append4Bytes(message_id);
+    packet.append2Bytes(message.length());
+    packet.append(message);
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildMessageInAck(u_int32_t message_id, u_int8_t code)
+{
+    ByteBuffer packet;
+
+    packet.appendByte(MESSAGE_IN_ACK);
+    packet.append2Bytes(8);
+    packet.append4Bytes(message_id);
+    packet.appendByte(code);
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildContactListRequest()
+{
+    ByteBuffer packet;
+
+    packet.appendByte(CONTACT_LIST_REQUEST);
+    packet.append2Bytes(3);
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildContactListResponse(std::vector<User> contacts)
+{
+    ByteBuffer packet;
+
+    packet.appendByte(CONTACT_LIST_RESPONSE);
+    packet.append2Bytes(77);
+    packet.append2Bytes(contacts.size());
+
+    for(auto it = contacts.begin(); it != contacts.end(); it++) {
+        packet.append2Bytes(it->username.length());
+        packet.append(it->username);
+        packet.appendByte(it->status);
+    }
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildPresence(std::string username, u_int8_t status)
+{
+    ByteBuffer packet;
+
+    packet.appendByte(PRESENCE);
+    packet.append2Bytes(4 + username.length());
+    packet.append(username);
+    packet.appendByte(status);
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildPresenceAck(std::string username)
+{
+    ByteBuffer packet;
+
+    packet.appendByte(PRESENCE_ACK);
+    packet.append2Bytes(1 + username.length());
+    packet.append(username);
+
+    return packet;
+}
+
+
+
+ByteBuffer ChatPacketBuilder::buildKeepAlive()
+{
+    ByteBuffer packet;
+
+    packet.appendByte(KEEP_ALIVE);
+    packet.append2Bytes(3);
+
+    return packet;
+}
+
+
+ByteBuffer ChatPacketBuilder::buildKeepAliveAck()
+{
+    ByteBuffer packet;
+
+    packet.appendByte(KEEP_ALIVE_ACK);
+    packet.append2Bytes(3);
+
+    return packet;
+}

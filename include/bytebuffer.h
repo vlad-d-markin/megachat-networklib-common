@@ -31,6 +31,7 @@ public:
     ByteBuffer& removeFront(size_t bytes);
     ByteBuffer& removeRear(size_t bytes);
 
+    ByteBuffer& setAt(size_t pos, u_int16_t word);
 
     ByteBuffer& set(const u_int8_t * raw_data, size_t length);
     ByteBuffer& set(const std::string& str);

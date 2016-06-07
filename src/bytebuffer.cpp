@@ -75,6 +75,15 @@ ByteBuffer& ByteBuffer::removeRear(size_t bytes)
 
 
 
+ByteBuffer& ByteBuffer::setAt(size_t pos, u_int16_t word)
+{
+    m_data.insert(m_data.begin() + pos, (u_int8_t *) &word, ((u_int8_t *) &word) + sizeof(word));
+
+    return *this;
+}
+
+
+
 ByteBuffer& ByteBuffer::set(const u_int8_t *raw_data, size_t length)
 {
     m_data.clear();

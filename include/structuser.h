@@ -5,7 +5,7 @@
 
 struct User {
     std::string username;
-    unsigned char presence;
+    u_int8_t status;
 };
 
 #endif
