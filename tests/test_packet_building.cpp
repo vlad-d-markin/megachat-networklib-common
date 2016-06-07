@@ -12,7 +12,7 @@ TEST(PacketBuilding, BuildLogin) {
     test_packet = ChatPacketBuilder::buildLogin("user", "pass");
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -24,7 +24,7 @@ TEST(PacketBuilding, BuildLoginAck) {
     test_packet = ChatPacketBuilder::buildLoginAck(1);
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -36,7 +36,7 @@ TEST(PacketBuilding, BuildLogout) {
     test_packet = ChatPacketBuilder::buildLogout();
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -48,7 +48,7 @@ TEST(PacketBuilding, BuildLogoutAck) {
     test_packet = ChatPacketBuilder::buildLogoutAck();
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -56,12 +56,12 @@ TEST(PacketBuilding, BuildLogoutAck) {
 TEST(PacketBuilding, BuildMessageOut) {
     ByteBuffer test_packet;
     // 1 + 2 + 2 + rec + 4 + 2 + msg
-    u_int8_t valid_packet[] = "\x4\x0\xB\x0\x4user\x0\x0\x0\x2A\x0\x2hi";
+    u_int8_t valid_packet[] = "\x4\x0\x11\x0\x4user\x0\x0\x0\x2A\x0\x2hi";
 
     test_packet = ChatPacketBuilder::buildMessageOut("user", 42, "hi");
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -74,7 +74,7 @@ TEST(PacketBuilding, BuildMessageOutAck) {
     test_packet = ChatPacketBuilder::buildMessageOutAck(77, 1);
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -87,7 +87,7 @@ TEST(PacketBuilding, BuildMessageIn) {
     test_packet = ChatPacketBuilder::buildMessageIn("jack", 88, "go");
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -100,7 +100,7 @@ TEST(PacketBuilding, BuildMessageInAck) {
     test_packet = ChatPacketBuilder::buildMessageInAck(99, 1);
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -113,7 +113,7 @@ TEST(PacketBuilding, BuildContactListRequest) {
     test_packet = ChatPacketBuilder::buildContactListRequest();
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -130,8 +130,11 @@ TEST(PacketBuilding, BuildContactListResponse) {
 
     test_packet = ChatPacketBuilder::buildContactListResponse(contacts);
 
+    std::cerr << test_packet.toString() << std::endl;
+    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
+
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -144,7 +147,7 @@ TEST(PacketBuilding, BuildPresence) {
     test_packet = ChatPacketBuilder::buildPresence("user", 1);
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -152,12 +155,15 @@ TEST(PacketBuilding, BuildPresence) {
 TEST(PacketBuilding, BuildPresenceAck) {
     ByteBuffer test_packet;
     // 1 + 2 + user
-    u_int8_t valid_packet[] = "\xB\x0\x6\bob";
+    u_int8_t valid_packet[] = "\xB\x0\x6""bob";
 
     test_packet = ChatPacketBuilder::buildPresenceAck("bob");
 
+    std::cerr << test_packet.toString() << std::endl;
+    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
+
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -170,7 +176,7 @@ TEST(PacketBuilding, BuildKeepAlive) {
     test_packet = ChatPacketBuilder::buildKeepAlive();
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
 
 
@@ -183,5 +189,5 @@ TEST(PacketBuilding, BuildKeepAliveAck) {
     test_packet = ChatPacketBuilder::buildKeepAliveAck();
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()));
+    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
 }
