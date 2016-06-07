@@ -114,19 +114,19 @@ TEST(ByteBufferTest, ToStringConvertion)
 
 TEST(ByteBufferTest, CutPart)
 {
-    ByteBuffer bb1("test_string_cut");
-    ByteBuffer bb2("cut_test_cut");
-    ByteBuffer bb3("cut_test");
+    try {
+        ByteBuffer bb1("test_string_cut");
+        ByteBuffer bb2("cut_test_cut");
+        ByteBuffer bb3("cut_test");
 
 
-    std::cerr << "BB1 " << bb1.cut(1, 11).toString() << std::endl;
-    std::cerr << "BB1 " << bb1.cut(0, 11).toString() << std::endl;
-    std::cerr << "BB2 " << bb2.cut(3, 8).toString() << std::endl;
-    std::cerr << "BB3 " << bb3.cut(3).toString() << std::endl;
-
-    ASSERT_EQ(bb1.cut(0, 11), ByteBuffer("test_string"));
-    ASSERT_EQ(bb2.cut(3, 8), ByteBuffer("test"));
-    ASSERT_EQ(bb3.cut(3), ByteBuffer("test"));
+        ASSERT_EQ(bb1.cut(0, 11), ByteBuffer("test_string"));
+        ASSERT_EQ(bb2.cut(4, 8), ByteBuffer("test"));
+        ASSERT_EQ(bb3.cut(4), ByteBuffer("test"));
+    }
+    catch(Exception &e) {
+        FAIL() << e.description();
+    }
 }
 
 

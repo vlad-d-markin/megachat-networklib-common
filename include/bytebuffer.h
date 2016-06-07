@@ -25,7 +25,7 @@ public:
     void clear();
 
 
-    ByteBuffer cut(size_t from, size_t to = -1);
+    ByteBuffer cut(int from, int to = -1);
 
 
     ByteBuffer& removeFront(size_t bytes);

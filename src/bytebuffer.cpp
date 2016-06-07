@@ -1,6 +1,9 @@
 #include <bytebuffer.h>
 
 
+#include <iostream>
+
+
 ByteBuffer::ByteBuffer() {}
 
 
@@ -32,23 +35,19 @@ void ByteBuffer::clear()
 
 
 
-ByteBuffer ByteBuffer::cut(size_t from, size_t to)
+ByteBuffer ByteBuffer::cut(int from, int to)
 {
-    if(to < from) {
-        //throw
+    if(to > 0 && to < from) {
+        throw ByteBufferException("When cutting from nust be less than to.");
     }
 
-    ByteBuffer new_bb;
-    new_bb.set(* this);
+    size_t len = size() - from;
 
-    if(to > 0)
-        new_bb.removeRear(new_bb.size() - to);
-
-    if(from > 0) {
-        new_bb.removeFront(from);
+    if(to > 0) {
+        len = to - from;
     }
 
-    return new_bb;
+    return ByteBuffer(&m_data[from], len);
 }
 
 
