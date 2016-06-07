@@ -296,3 +296,14 @@ TEST(ByteBufferTest, SumOperator)
     ASSERT_EQ(aa + bb, valid);
 }
 
+
+TEST(ByteBufferTest, SetOperator)
+{
+    ByteBuffer aa("hello");
+    ByteBuffer bb("world");
+
+    aa = bb;
+
+    ASSERT_EQ(aa, bb);
+}
+

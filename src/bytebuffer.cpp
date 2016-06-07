@@ -240,9 +240,15 @@ u_int32_t ByteBuffer::pop4Bytes()
 // Operators
 ////////////////////////////////////////////////////
 
-ByteBuffer& ByteBuffer::operator+=(ByteBuffer & buffer)
+ByteBuffer& ByteBuffer::operator+=(const ByteBuffer & buffer)
 {
     append(buffer);
     return * this;
 }
 
+
+ByteBuffer& ByteBuffer::operator=(const ByteBuffer & buffer)
+{
+    set(buffer);
+    return * this;
+}

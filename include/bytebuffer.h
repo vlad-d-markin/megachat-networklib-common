@@ -66,7 +66,8 @@ public:
     std::string toString() const;
 
 
-    ByteBuffer& operator+=(ByteBuffer& buffer);
+    ByteBuffer& operator+=(const ByteBuffer& buffer);
+    ByteBuffer& operator=(const ByteBuffer& buffer);
 };
 
 
