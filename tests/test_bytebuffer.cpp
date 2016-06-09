@@ -268,8 +268,10 @@ TEST(ByteBufferTest, EqualOperator)
 {
     ByteBuffer a("test string");
     ByteBuffer b("test string");
+    ByteBuffer c("something else");
 
     ASSERT_EQ(a, b);
+    ASSERT_NE(a, c);
 }
 
 

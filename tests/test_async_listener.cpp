@@ -9,158 +9,287 @@
 #include <interfaces/itcplistenerlistener.h>
 
 
-class TestHelper;
+class Strategy;
 
-class BaseTestState {
-protected:
-    TestHelper * m_helper;
+class ITestHelper {
 public:
-    BaseTestState(TestHelper * helper) : m_helper(helper) {}
-
-    virtual void onServerAccepted(TcpSocket * socket) { FAIL() << "State received wrong event"; }
-    virtual void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
-    virtual void onServerClosed() { FAIL() << "State received wrong event"; }
-
-    virtual void onClientOpened() { FAIL() << "State received wrong event"; }
-    virtual void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
-    virtual void onClientClosed() { FAIL() << "State received wrong event"; }
+    virtual void setStrategy(Strategy * strategy) = 0;
+    virtual TcpConnection * getClient() = 0;
+    virtual TcpConnection * getServer() = 0;
+    virtual void finishTest() = 0;
 };
 
 
-class WaitingForClientState;
-class WaitingForClientRequestState;
 
 
-class WaitingForClientState : public BaseTestState {
+class Strategy {
+protected:
+    ITestHelper * m_test_helper;
+
 public:
-    WaitingForClientState(TestHelper * helper) : BaseTestState(helper) {}
+    Strategy(ITestHelper * helper) : m_test_helper(helper) {}
 
-    void onServerAccepted(TcpSocket * socket)
-    {
-//        std::cerr << "Accepted new client" << std::endl;
-//        delete m_helper->m_state;
-//        m_helper->m_state = new WaitingForClientRequestState(m_helper);
+    virtual void onClientOpened() {
+        FAIL() << "onClientOpened()";
+        m_test_helper->finishTest();
+    }
+
+    virtual void onClientClosed(){
+        FAIL() << "onClientClosed()";
+        m_test_helper->finishTest();
+    }
+
+    virtual void onClientReceived(std::string data) {
+        FAIL() << "onClientReceived() (" + data + ")";
+        m_test_helper->finishTest();
+    }
+
+    virtual void onServerOpened() {
+        FAIL() << "onServerOpened()";
+        m_test_helper->finishTest();
+    }
+
+    virtual void onServerClosed() {
+        FAIL() << "onServerClosed()";
+        m_test_helper->finishTest();
+    }
+
+    virtual void onServerReceived(std::string data) {
+        FAIL() << "onServerReceived() (" + data + ")";
+        m_test_helper->finishTest();
+    }
+};
+
+
+
+
+class CloseStrategy : public Strategy {
+private:
+    bool m_client_closed;
+    bool m_server_closed;
+
+public:
+    CloseStrategy(ITestHelper * helper) : Strategy(helper),
+        m_client_closed(false), m_server_closed(false) {}
+
+    virtual void onClientClosed() {
+        m_client_closed = true;
+
+        if(m_client_closed && m_server_closed) {
+            m_test_helper->finishTest();
+            SUCCEED();
+        }
     }
 
 
-    void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
-    void onServerClosed() { FAIL() << "State received wrong event"; }
-    void onClientOpened() {  }
-    void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
-    void onClientClosed() { FAIL() << "State received wrong event"; }
+    virtual void onServerClosed() {
+        m_server_closed = true;
+
+        if(m_client_closed && m_server_closed) {
+            m_test_helper->finishTest();
+            SUCCEED();
+        }
+    }
 };
 
 
-class WaitingForClientRequestState : public BaseTestState {
+class ClienReceivedStrategy : public Strategy {
 public:
-    WaitingForClientRequestState(TestHelper * helper) : BaseTestState(helper) {}
+    ClienReceivedStrategy(ITestHelper * helper) : Strategy(helper) {}
 
-    void onServerAccepted(TcpSocket * socket) { FAIL() << "State received wrong event"; }
-
-
-    void onServerReceived(std::string data) { FAIL() << "State received wrong event"; }
-    void onServerClosed() { FAIL() << "State received wrong event"; }
-    void onClientOpened() {  }
-    void onClientReceived(std::string data) { FAIL() << "State received wrong event"; }
-    void onClientClosed() { FAIL() << "State received wrong event"; }
+    virtual void onClientReceived(std::string data) {
+        ASSERT_EQ(data, "test2");
+        m_test_helper->setStrategy(new CloseStrategy(m_test_helper));
+        m_test_helper->getClient()->close();
+    }
 };
 
 
 
-class TestHelper : public testing::Test {
-public:
-    BaseTestState * m_state;
 
+class ServerReceivedStragety : public Strategy {
+public:
+    ServerReceivedStragety(ITestHelper * helper) : Strategy(helper) {}
+
+    virtual void onServerReceived(std::string data) {
+        ASSERT_EQ(data, "test1");
+        m_test_helper->getServer()->send("test2");
+        m_test_helper->setStrategy(new ClienReceivedStrategy(m_test_helper));
+    }
+};
+
+
+
+
+class OpenConnectionStrategy : public Strategy {
+public:
+    OpenConnectionStrategy(ITestHelper * helper) : Strategy(helper) {}
+
+    virtual void onClientOpened() {
+        m_test_helper->getClient()->send("test1");
+        m_test_helper->setStrategy(new ServerReceivedStragety(m_test_helper));
+    }
+};
+
+
+class ICurrentStrategyProvider {
+public:
+    virtual Strategy * getStrategy() = 0;
+};
+
+
+
+
+class ClientTcpListener : public ITcpConnectionListener {
+private:
+    ICurrentStrategyProvider * m_strategy_provider;
+
+public:
+    ClientTcpListener(ICurrentStrategyProvider * provider) : m_strategy_provider(provider) {}
+
+    void onOpened(){
+        m_strategy_provider->getStrategy()->onClientOpened();
+    }
+
+    void onClosed() {
+        m_strategy_provider->getStrategy()->onClientClosed();
+    }
+
+    void onReceived(std::string data) {
+        m_strategy_provider->getStrategy()->onClientReceived(data);
+    }
+};
+
+
+
+
+class ServerTcpListener : public ITcpConnectionListener {
+private:
+    ICurrentStrategyProvider * m_strategy_provider;
+
+public:
+    ServerTcpListener(ICurrentStrategyProvider * provider) : m_strategy_provider(provider) {}
+
+    void onOpened(){
+        m_strategy_provider->getStrategy()->onServerOpened();
+    }
+
+    void onClosed() {
+        m_strategy_provider->getStrategy()->onServerClosed();
+    }
+
+    void onReceived(std::string data) {
+        m_strategy_provider->getStrategy()->onServerReceived(data);
+    }
+};
+
+
+
+
+class TestHelper : public ICurrentStrategyProvider,
+        public ITcpListenerListener, public ::testing::Test,
+        public ITestHelper  {
+private:
+    TcpConnection * m_client;
+    TcpConnection * m_server;
+    TcpListener * m_listener;
     EventManager * m_evmanager;
-    TcpConnection * m_connection;
-    TcpListener *   m_listener;
+
+    Strategy * m_strategy;
+
+    ClientTcpListener * m_client_listener;
+    ServerTcpListener * m_server_listener;
 
 
-    // Clitent side listener redirects all events to helper
-    class ClientSideListener : public ITcpConnectionListener {
-        BaseTestState ** m_state;
-    public:
-        ClientSideListener(BaseTestState ** state) : m_state(state) {}
-
-        virtual void onOpened() {
-            (*m_state)->onClientOpened();
-        }
-
-        virtual void onClosed() {
-            (*m_state)->onClientClosed();
-        }
-
-        virtual void onReceived(std::string data) {
-            (*m_state)->onClientReceived(data);
-        }
-    };
-
-    // Server side listener redirects all events to helper
-    class ServerSideListener : public ITcpListenerListener {
-        BaseTestState ** m_state;
-    public:
-        ServerSideListener(BaseTestState ** state) : m_state(state) {}
-
-        virtual void onAccepted(TcpSocket *socket) {
-            (*m_state)->onServerAccepted(socket);
-        }
-
-        virtual void onClosed() {
-            (*m_state)->onServerClosed();
-        }
-
-        virtual void onReceived(std::string data) {
-            (*m_state)->onServerReceived(data);
-        }
-    };
-
-
-    ClientSideListener * m_client_listener;
-    ServerSideListener * m_server_listener;
+public:
 
     TestHelper() {
-        // Setup default state that fails test
-        m_state = new BaseTestState(this);
 
-        // Listeners that redirect all events to current state
-        m_server_listener = new ServerSideListener(&m_state);
-        m_client_listener = new ClientSideListener(&m_state);
-
-        // Event manager
-        m_evmanager = new EventManager();
-
-        // Server
-        m_listener = new TcpListener();
-        m_listener->setListener(m_server_listener);
-        m_evmanager->registerClient(m_listener);
-
-        // Client
-        IpAddress addr("127.0.0.1", 9999);
-        m_connection = new TcpConnection(addr);
-        m_connection->setListener(m_client_listener);
-        m_connection->setEventManager(m_evmanager);
     }
 
-    void startTest() {
-        try {
-            m_listener->listen(9999);
-            m_state = new WaitingForClientState(this);
+    void runTest() {
+        m_strategy = new OpenConnectionStrategy(this);
 
-            m_connection->open();
+        m_client_listener = new ClientTcpListener(this);
+        m_server_listener = new ServerTcpListener(this);
 
-            m_evmanager->execute();
-        }
-        catch (Exception &e) {
-            m_listener->close();
-            FAIL() << e.description();
-        }
+        m_evmanager = new EventManager();
+        m_client = new TcpConnection(IpAddress("127.0.0.1", 9999));
+        m_listener = new TcpListener();
+
+        m_listener->listen(9999);
+        m_listener->setListener(this);
+
+        m_client->setEventManager(m_evmanager);
+        m_client->setListener(m_client_listener);
+        m_client->open();
+
+        m_evmanager->registerClient(m_listener);
+        m_evmanager->registerClient(m_client);
+
+        m_evmanager->execute();
+
+        delete m_strategy;
+
+        delete m_client_listener;
+        delete m_server_listener;
+
+        delete m_client;
+        delete m_server;
+        delete m_listener;
+        delete m_evmanager;
+    }
+
+
+    virtual void finishTest() {
+        m_evmanager->terminate();
+    }
+
+
+    virtual Strategy * getStrategy() {
+        return m_strategy;
+    }
+
+
+    virtual void setStrategy(Strategy *strategy) {
+        if(m_strategy != 0)
+            delete m_strategy;
+
+        m_strategy = strategy;
+    }
+
+    virtual TcpConnection * getClient() {
+        return m_client;
+    }
+
+    virtual TcpConnection * getServer() {
+        return m_server;
+    }
+
+    virtual void onAccepted(TcpSocket *socket) {
+        m_server = new TcpConnection(socket);
+        m_server->setEventManager(m_evmanager);
+        m_server->setListener(m_server_listener);
+        m_evmanager->registerClient(m_server);
+    }
+
+
+    virtual void onClosed() {
+        // Clled from TcpListener
     }
 
 };
+
+
 
 
 TEST_F(TestHelper, ConnTest) {
-//    startTest();
+    try {
+    runTest();
+    }
+    catch(Exception &e) {
+        FAIL() << e.description();
+    }
 }
 
 

@@ -14,17 +14,26 @@ class ChatConnection : public IChatConnection, public IByteConnectionListener {
 protected:
     IByteConnection * m_connection;
     IChatConnectionListener * m_listener;
+    std::string m_buffer;
+
 
 public:
-    ChatConnection(IByteConnection * connection, IChatConnectionListener * listener);
+    ChatConnection(IByteConnection * connection);
+
+
+    void setListener(IChatConnectionListener * listener);
+
+
+    virtual void open();
+    virtual void close();
 
 
     virtual void sendLogin(std::string username, std::string password);
-    virtual void sendLoginAck();
+    virtual void sendLoginAck(unsigned char code);
     virtual void sendLogout();
     virtual void sendLogoutAck();
     virtual void sendMessageOut(int message_id, std::string recipient, std::string message);
-    virtual void sendMessageOutAck(int message_id, char code) = 0;
+    virtual void sendMessageOutAck(int message_id, char code);
     virtual void sendMessageIn(int message_id, std::string sender, std::string message);
     virtual void sendMessageInAck(int message_id, char code);
     virtual void sendContactListRequest();
@@ -38,6 +47,9 @@ public:
     virtual void onOpened();
     virtual void onReceived(std::string data);
     virtual void onClosed();
+
+private:
+    void parsePacket();
 };
 
 #endif

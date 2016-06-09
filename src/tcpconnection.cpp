@@ -61,12 +61,12 @@ void TcpConnection::close()
 {
     m_connection_state = CLOSING;
 
+    m_event_manager->unregisterClient(this);
+
     if(m_socket != 0) {
         m_socket->close();
         delete m_socket;
-    }
-
-    m_event_manager->unregisterClient(this);
+    }    
 
     m_connection_state = CLOSED;
     m_listener->onClosed();
@@ -103,6 +103,11 @@ void TcpConnection::onIn()
 {
     try {
         std::string incoming_data = m_socket->receive();
+
+        if(incoming_data.length() == 0) {
+            close();
+            return;
+        }
 
         m_listener->onReceived(incoming_data);
     }

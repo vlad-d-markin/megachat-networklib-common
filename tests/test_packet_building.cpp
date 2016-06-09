@@ -130,8 +130,8 @@ TEST(PacketBuilding, BuildContactListResponse) {
 
     test_packet = ChatPacketBuilder::buildContactListResponse(contacts);
 
-    std::cerr << test_packet.toString() << std::endl;
-    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
+//    std::cerr << test_packet.toString() << std::endl;
+//    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
     ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
@@ -158,9 +158,6 @@ TEST(PacketBuilding, BuildPresenceAck) {
     u_int8_t valid_packet[] = "\xB\x0\x6""bob";
 
     test_packet = ChatPacketBuilder::buildPresenceAck("bob");
-
-    std::cerr << test_packet.toString() << std::endl;
-    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
     ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);

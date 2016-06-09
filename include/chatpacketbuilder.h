@@ -48,4 +48,22 @@ public:
     static ByteBuffer buildKeepAliveAck();
 };
 
+
+class WrongPacketException {
+
+};
+
+
+class ChatPacketParser {
+private:
+    std::string m_buffer;
+
+public:
+    ChatPacketParser(const std::string &buffer) : m_buffer(buffer) {}
+
+    char getByte();
+    short int getShort();
+    std::string getString();
+};
+
 #endif

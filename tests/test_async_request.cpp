@@ -57,7 +57,8 @@ public:
 };
 
 TEST_F(AsyncConnectGoogle, Connect) {
-    testRequest();
+    FAIL();
+//    testRequest();
 }
 
 
@@ -112,7 +113,8 @@ public:
 
 
 TEST_F(AsyncRequestGoogle, Request) {
-    testRequest();
+    FAIL();
+//    testRequest();
 }
 
 

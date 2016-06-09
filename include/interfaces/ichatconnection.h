@@ -11,6 +11,9 @@
 
 class IChatConnection {
 public:
+    virtual void open() = 0;
+    virtual void close() = 0;
+
     virtual void sendLogin(std::string username, std::string password) = 0;
     virtual void sendLoginAck(unsigned char code) = 0;
     virtual void sendLogout() = 0;

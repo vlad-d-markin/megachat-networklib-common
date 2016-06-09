@@ -210,3 +210,54 @@ ByteBuffer ChatPacketBuilder::buildKeepAliveAck()
 
     return packet;
 }
+
+
+
+
+
+
+// Chat packet parser
+
+
+
+char ChatPacketParser::getByte()
+{
+    char byte;
+
+    if(m_buffer.length() < 1)
+        throw WrongPacketException();
+
+    byte = m_buffer[0];
+    m_buffer = m_buffer.substr(1);
+
+    return byte;
+}
+
+
+short int ChatPacketParser::getShort()
+{
+    short int a;
+
+    if(m_buffer.length() < 2)
+        throw WrongPacketException();
+
+    a = (unsigned char)m_buffer[0] * 256 + (unsigned char)m_buffer[1];
+    m_buffer = m_buffer.substr(2);
+
+    return a;
+}
+
+
+std::string ChatPacketParser::getString()
+{
+    short int len = getShort();
+
+    if(m_buffer.length() < len)
+        throw WrongPacketException();
+
+    std::string str = m_buffer.substr(0, len);
+    m_buffer = m_buffer.substr(len);
+
+    return str;
+}
+
