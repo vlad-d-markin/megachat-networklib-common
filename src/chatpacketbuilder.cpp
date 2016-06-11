@@ -148,15 +148,15 @@ ByteBuffer ChatPacketBuilder::buildContactListResponse(std::vector<User> contact
 
     packet.appendByte(CONTACT_LIST_RESPONSE);
     packet.append2Bytes('a');
-    packet.append2Bytes(contacts.size());
+    packet.append2Bytes(::htons(contacts.size()));
 
     for(auto it = contacts.begin(); it != contacts.end(); it++) {
-        packet.append2Bytes(it->username.length());
+        packet.append2Bytes(::htons(it->username.length()));
         packet.append(it->username);
         packet.appendByte(it->status);
     }
 
-    packet.setAt(1, packet.size());
+    packet.setAt(1, ::htons(packet.size()));
 
     return packet;
 }

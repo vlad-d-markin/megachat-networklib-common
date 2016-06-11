@@ -41,7 +41,9 @@ public:
     static ByteBuffer buildMessageIn(std::string sender, u_int32_t message_id, std::string message);
     static ByteBuffer buildMessageInAck(u_int32_t message_id, u_int8_t code);
     static ByteBuffer buildContactListRequest();
+
     static ByteBuffer buildContactListResponse(std::vector<User> contacts);
+
     static ByteBuffer buildPresence(std::string username, u_int8_t status);
     static ByteBuffer buildPresenceAck(std::string username);
     static ByteBuffer buildKeepAlive();
@@ -49,9 +51,7 @@ public:
 };
 
 
-class WrongPacketException {
-
-};
+class WrongPacketException {};
 
 
 class ChatPacketParser {

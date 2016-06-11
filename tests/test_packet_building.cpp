@@ -134,7 +134,8 @@ TEST(PacketBuilding, BuildContactListResponse) {
 //    std::cerr << std::string((char *) valid_packet, sizeof(valid_packet) - 1) << std::endl;
 
     ASSERT_EQ(test_packet.size(), sizeof(valid_packet) - 1);
-    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
+//    ASSERT_TRUE(memcmp(test_packet.data(), valid_packet, test_packet.size()) == 0);
+    ASSERT_EQ(test_packet.toString(), std::string((char *)valid_packet, sizeof(valid_packet) - 1));
 }
 
 
