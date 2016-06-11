@@ -131,7 +131,7 @@ void TcpConnection::onOut()
 
     case ACTIVE:
         // Send data in buffer
-
+        m_send_buffer = m_send_buffer.substr(m_socket->send(m_send_buffer));
         break;
     }
 

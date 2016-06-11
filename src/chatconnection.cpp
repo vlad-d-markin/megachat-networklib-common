@@ -280,8 +280,9 @@ void ChatConnection::parsePacket()
         case ChatPacketBuilder::KEEP_ALIVE_ACK:
             m_listener->onKeepAliveAck();
             break;
-    default:
-        close();
-        break;
-    }
+
+        default:
+            close();
+            break;
+        }
 }
