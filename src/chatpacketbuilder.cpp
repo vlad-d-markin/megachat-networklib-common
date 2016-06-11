@@ -248,6 +248,18 @@ short int ChatPacketParser::getShort()
 }
 
 
+int ChatPacketParser::getInt()
+{
+    int a;
+
+    if(m_buffer.length() < 4)
+        throw WrongPacketException();
+
+    a = (unsigned char) m_buffer[0]  << 24 + (unsigned char) m_buffer[1]  << 16 + (unsigned char) m_buffer[2]  << 8 +(unsigned char) m_buffer[3];
+
+    return a;
+}
+
 std::string ChatPacketParser::getString()
 {
     short int len = getShort();

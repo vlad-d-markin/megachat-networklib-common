@@ -6,7 +6,8 @@ include_directories(${GTEST_INCLUDE_DIRS} ../include)
 
 add_executable(test-${PROJECT_NAME} ${TEST_SRC})
 
-add_library(mega-networklib STATIC IMPORTED)
-set_target_properties(mega-networklib PROPERTIES IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/src/lib${PROJECT_NAME}.a)
+#add_library(mega-networklib STATIC IMPORTED)
+#set_target_properties(mega-networklib PROPERTIES IMPORTED_LOCATION ${PROJECT_BINARY_DIR}/src/lib${PROJECT_NAME}.a)
 
-target_link_libraries(test-${PROJECT_NAME} ${GTEST_LIBRARIES} pthread mega-networklib )
+# mega-networklib
+target_link_libraries(test-${PROJECT_NAME} ${GTEST_LIBRARIES} pthread  ${PROJECT_NAME})

@@ -46,7 +46,12 @@ public:
     std::string m_username;
     std::string m_password;
 
-    //
+    // Login Ack
+    char m_login_ack_code;
+
+    // Message out
+
+    // Message Out Ack
 
 
     void clear() {
@@ -54,6 +59,8 @@ public:
 
         m_username.clear();
         m_password.clear();
+
+        m_login_ack_code = -1;
     }
 
     virtual void onOpened() {}
@@ -68,12 +75,28 @@ public:
     }
 
 
-    virtual void onLoginAck() {}
-    virtual void onLogout() {}
-    virtual void onLogoutAck() {}
-    virtual void onMessageOut(int message_id, std::string sender, std::string recipient, std::string message) {}
+    virtual void onLoginAck(char code)
+    {
+        m_packet_code = ChatPacketBuilder::LOGIN_ACK;
+        m_login_ack_code = code;
+    }
+
+
+    virtual void onLogout()
+    {
+        m_packet_code = ChatPacketBuilder::LOGOUT;
+    }
+
+
+    virtual void onLogoutAck()
+    {
+        m_packet_code = ChatPacketBuilder::LOGOUT_ACK;
+    }
+
+
+    virtual void onMessageOut(std::string recipient, int message_id, std::string message) {}
     virtual void onMessageOutAck(int message_id, char code) {}
-    virtual void onMessageIn(int message_id, std::string sender, std::string recipient, std::string message) {}
+    virtual void onMessageIn(std::string sender, int message_id, std::string message) {}
     virtual void onMessageInAck(int message_id, char code) {}
     virtual void onContactListRequest() {}
     virtual void onContactListResponse(std::vector<std::string> contacts) {}
@@ -92,21 +115,58 @@ private:
     ChatConnectionListenerSpy   m_chat_connection_listener_spy;
     ChatConnection              m_chat_connection;
 
+protected:
+    virtual void SetUp() {
+        m_chat_connection.setListener(&m_chat_connection_listener_spy);
+        m_byte_connection_spy.clear();
+        m_chat_connection_listener_spy.clear();
+    }
+
 public:
     TestChatConnection() :
         m_chat_connection(&m_byte_connection_spy)
     {
         m_chat_connection.setListener(&m_chat_connection_listener_spy);
+        m_byte_connection_spy.clear();
+        m_chat_connection_listener_spy.clear();
     }
 
+    /////////////////////////////////////////
+    // Test packet sending
+    /////////////////////////////////////////
 
-    void testSendLogin() {
-        m_byte_connection_spy.clear();
+    void testSendLogin()
+    {
         m_chat_connection.sendLogin("user", "pass");
 
         ASSERT_EQ(m_byte_connection_spy.m_data, std::string("\x0\x0\xF\x0\x4user\x0\x4pass", 15));
     }
 
+    void testSendLoginAck()
+    {
+        m_chat_connection.sendLoginAck(1);
+
+        ASSERT_EQ(m_byte_connection_spy.m_data, std::string("\x1\x0\x4\x1", 4));
+    }
+
+    void testSendLogout()
+    {
+        m_chat_connection.sendLogout();
+
+        ASSERT_EQ(m_byte_connection_spy.m_data, std::string("\x2\x0\x3", 3));
+    }
+
+    void testSendLogoutAck()
+    {
+        m_chat_connection.sendLogoutAck();
+
+        ASSERT_EQ(m_byte_connection_spy.m_data, std::string("\x3\x0\x3", 3));
+    }
+
+
+    /////////////////////////////////////////
+    // Test packet receiving
+    /////////////////////////////////////////
 
     void testReceivedLogin() {
         m_chat_connection_listener_spy.clear();
@@ -116,19 +176,39 @@ public:
         ASSERT_EQ(m_chat_connection_listener_spy.m_username, "user");
         ASSERT_EQ(m_chat_connection_listener_spy.m_password, "pass");
     }
+
+    void testReceivedLoginAck() {
+        m_chat_connection_listener_spy.clear();
+        m_chat_connection.onReceived(std::string("\x1\x0\x4\x2", 4));
+
+        ASSERT_EQ(m_chat_connection_listener_spy.m_packet_code, ChatPacketBuilder::LOGIN_ACK);
+        ASSERT_EQ(m_chat_connection_listener_spy.m_login_ack_code, 2);
+    }
+
+    void testReceivedLogout() {
+        m_chat_connection_listener_spy.clear();
+        m_chat_connection.onReceived(std::string("\x2\x0\x3", 3));
+
+        ASSERT_EQ(m_chat_connection_listener_spy.m_packet_code, ChatPacketBuilder::LOGOUT);
+    }
 };
 
 
 
-TEST_F(TestChatConnection, SendLogin)
-{
-    testSendLogin();
-}
+
+// Run tests
+
+TEST_F(TestChatConnection, SendLogin) { testSendLogin(); }
+TEST_F(TestChatConnection, SendLoginAck) { testSendLoginAck(); }
+TEST_F(TestChatConnection, SendLogout) { testSendLogout(); }
+TEST_F(TestChatConnection, SendLogoutAck) { testSendLogoutAck(); }
 
 
-TEST_F(TestChatConnection, ReceivedLogin)
-{
-    testReceivedLogin();
-}
+
+TEST_F(TestChatConnection, ReceivedLogin) { testReceivedLogin(); }
+TEST_F(TestChatConnection, ReceivedLoginAck) { testReceivedLoginAck(); }
+TEST_F(TestChatConnection, ReceivedLogout) { testReceivedLogout(); }
+
+
 
 

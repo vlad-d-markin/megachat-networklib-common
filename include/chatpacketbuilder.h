@@ -63,6 +63,7 @@ public:
 
     char getByte();
     short int getShort();
+    int getInt();
     std::string getString();
 };
 

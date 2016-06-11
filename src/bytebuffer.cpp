@@ -118,7 +118,7 @@ ByteBuffer& ByteBuffer::append(const u_int8_t *raw_data, size_t length)
 
 ByteBuffer& ByteBuffer::append(const std::string &str)
 {
-    return append((uint8_t *)str.c_str(), str.length());
+    return append((const u_int8_t *)str.c_str(), str.length());
 }
 
 
@@ -139,14 +139,14 @@ ByteBuffer& ByteBuffer::appendByte(u_int8_t byte)
 
 ByteBuffer& ByteBuffer::append2Bytes(u_int16_t word)
 {
-    return append((uint8_t *) &word, sizeof(uint16_t));
+    return append((const u_int8_t *) &word, sizeof(uint16_t));
 }
 
 
 
 ByteBuffer& ByteBuffer::append4Bytes(u_int32_t bytes)
 {
-    return append((uint8_t *) &bytes, sizeof(uint32_t));
+    return append((const u_int8_t *) &bytes, sizeof(uint32_t));
 }
 
 

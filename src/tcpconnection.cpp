@@ -88,7 +88,7 @@ void TcpConnection::send(std::string data)
             m_send_buffer += data.substr(bytes_sent);
     }
     catch(TcpSocketWouldBlock &e) {
-        // Inpossible to send data right now, put it in buffer
+        // Impossible to send data right now, put it in buffer
         m_send_buffer += data;
     }
     catch(TcpSocketException &e) {
@@ -131,6 +131,7 @@ void TcpConnection::onOut()
 
     case ACTIVE:
         // Send data in buffer
+
         break;
     }
 
@@ -151,7 +152,7 @@ int TcpConnection::getSocket()
 
 bool TcpConnection::isPollingOut()
 {
-    // If waiting for connection to esablish
+    // If waiting for connection to establish
     if(m_connection_state == OPENING)
         return true;
 
