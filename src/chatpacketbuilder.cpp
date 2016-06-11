@@ -147,7 +147,7 @@ ByteBuffer ChatPacketBuilder::buildContactListResponse(std::vector<User> contact
     ByteBuffer packet;
 
     packet.appendByte(CONTACT_LIST_RESPONSE);
-    packet.append2Bytes('a');
+    packet.append2Bytes(0);
     packet.append2Bytes(::htons(contacts.size()));
 
     for(auto it = contacts.begin(); it != contacts.end(); it++) {
@@ -256,9 +256,11 @@ int ChatPacketParser::getInt()
         throw WrongPacketException();
 
     a = (unsigned char) m_buffer[0]  << 24 + (unsigned char) m_buffer[1]  << 16 + (unsigned char) m_buffer[2]  << 8 +(unsigned char) m_buffer[3];
+    m_buffer = m_buffer.substr(4);
 
     return a;
 }
+
 
 std::string ChatPacketParser::getString()
 {

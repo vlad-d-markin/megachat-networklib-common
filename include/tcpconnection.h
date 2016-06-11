@@ -28,6 +28,8 @@ public:
 
     virtual void send(std::string data);
 
+
+
     virtual void onIn();
 
     virtual void onOut();

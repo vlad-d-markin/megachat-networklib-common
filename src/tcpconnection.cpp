@@ -32,7 +32,7 @@ void TcpConnection::open()
 {
     m_connection_state = OPENING;
 
-    // If connection is already esablished
+    // If connection is already established
     if(m_socket != 0) {
         m_connection_state = ACTIVE;
 

@@ -249,7 +249,7 @@ void ChatConnection::parsePacket()
 
         case ChatPacketBuilder::CONTACT_LIST_RESPONSE:
         {
-            // Parse contacts
+            // TODO: Parse contacts
         }
             break;
 

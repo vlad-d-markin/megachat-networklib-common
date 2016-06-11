@@ -12,9 +12,9 @@
 
 class ChatConnection : public IChatConnection, public IByteConnectionListener {
 protected:
-    IByteConnection * m_connection;
-    IChatConnectionListener * m_listener;
-    std::string m_buffer;
+    IByteConnection *           m_connection;
+    IChatConnectionListener *   m_listener;
+    std::string                 m_buffer;
 
 
 public:
