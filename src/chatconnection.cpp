@@ -58,70 +58,70 @@ void ChatConnection::sendLogoutAck()
 
 void ChatConnection::sendMessageOut(int message_id, std::string recipient, std::string message)
 {
-
+    m_connection->send(ChatPacketBuilder::buildMessageOut(recipient, message_id, message).toString());
 }
 
 
 
 void ChatConnection::sendMessageOutAck(int message_id, char code)
 {
-
+    m_connection->send(ChatPacketBuilder::buildMessageOutAck(message_id, code).toString());
 }
 
 
 
 void ChatConnection::sendMessageIn(int message_id, std::string sender, std::string message)
 {
-
+    m_connection->send(ChatPacketBuilder::buildMessageOut(sender, message_id, message).toString());
 }
 
 
 
 void ChatConnection::sendMessageInAck(int message_id, char code)
 {
-
+    m_connection->send(ChatPacketBuilder::buildMessageInAck(message_id, code).toString());
 }
 
 
 
 void ChatConnection::sendContactListRequest()
 {
-
+    m_connection->send(ChatPacketBuilder::buildContactListRequest().toString());
 }
 
 
 
 void ChatConnection::sendContactListResponse(std::vector<User> contacts)
 {
-
+    m_connection->send(ChatPacketBuilder::buildContactListResponse(contacts).toString());
 }
 
 
 
 void ChatConnection::sendPresence(std::string username, char status)
 {
-
+    m_connection->send(ChatPacketBuilder::buildPresence(username, status).toString());
 }
 
 
 
 void ChatConnection::sendPresenceAck(std::string username)
 {
-
+    m_connection->send(ChatPacketBuilder::buildPresenceAck(username).toString());
 }
 
 
 
 void ChatConnection::sendKeepAlive()
 {
-
+    m_connection->send(ChatPacketBuilder::buildKeepAlive().toString());
 }
 
 
 
 void ChatConnection::sendKeepAliveAck()
 {
-
+    m_connection->send(ChatPacketBuilder::buildKeepAliveAck().toString());
 }
 
 
